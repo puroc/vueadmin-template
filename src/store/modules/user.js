@@ -5,7 +5,7 @@ const user = {
   state: {
     token: getToken(),
     name: '',
-    roles: []
+    roles: ['1']
   },
 
   mutations: {

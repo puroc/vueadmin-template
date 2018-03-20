@@ -72,6 +72,28 @@ export const constantRouterMap = [
     ]
   },
 
+  {
+    path: '/admin',
+    component: Layout,
+    redirect: '/admin/manager',
+    name: 'Admin',
+    meta: { title: 'Admin', icon: 'Admin' },
+    children: [
+      {
+        path: 'user',
+        name: 'User',
+        component: () => import('@/views/admin/user/index'),
+        meta: { title: 'User', icon: 'table' }
+      },
+      {
+        path: 'tree',
+        name: 'Tree',
+        component: () => import('@/views/tree/index'),
+        meta: { title: 'Tree', icon: 'tree' }
+      }
+    ]
+  },
+
   { path: '*', redirect: '/404', hidden: true }
 ]
 
