@@ -24,72 +24,56 @@ import Layout from '../views/layout/Layout'
 export const constantRouterMap = [
   { path: '/login', component: () => import('@/views/login/index'), hidden: true },
   { path: '/404', component: () => import('@/views/404'), hidden: true },
+  { path: '/', redirect: '/dashboard' },
 
   {
-    path: '/',
+    path: '/dashboard',
     component: Layout,
-    redirect: '/dashboard',
-    name: 'Dashboard',
-    hidden: true,
+    // redirect: '/dashboard',
+    name: '仪表盘',
     children: [{
-      path: 'dashboard',
-      component: () => import('@/views/dashboard/index')
+      path: 'index',
+      name: 'dashboard',
+      component: () => import('@/views/dashboard/index'),
+      meta: { title: '仪表盘', icon: 'example' }
     }]
   },
-
   {
-    path: '/example',
+    path: '/org',
     component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'example' },
-    children: [
-      {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
-      },
-      {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
-      }
-    ]
-  },
-
-  {
-    path: '/form',
-    component: Layout,
+    name: '机构管理',
     children: [
       {
         path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
+        name: 'Org',
+        component: () => import('@/views/org/index'),
+        meta: { title: '机构管理', icon: 'example' }
       }
     ]
   },
-
   {
-    path: '/admin',
+    path: '/user',
     component: Layout,
-    redirect: '/admin/manager',
-    name: 'Admin',
-    meta: { title: 'Admin', icon: 'Admin' },
+    name: '用户管理',
     children: [
       {
-        path: 'user',
-        name: 'User',
-        component: () => import('@/views/admin/user/index'),
-        meta: { title: 'User', icon: 'table' }
-      },
+        path: 'index',
+        name: 'user',
+        component: () => import('@/views/user/index'),
+        meta: { title: '用户管理', icon: 'example' }
+      }
+    ]
+  },
+  {
+    path: '/role',
+    component: Layout,
+    name: '角色管理',
+    children: [
       {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
+        path: 'index',
+        name: 'role',
+        component: () => import('@/views/role/index'),
+        meta: { title: '角色管理', icon: 'example' }
       }
     ]
   },
