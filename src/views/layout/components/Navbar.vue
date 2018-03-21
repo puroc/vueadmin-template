@@ -3,15 +3,13 @@
     <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
     <breadcrumb></breadcrumb>
     <el-dropdown class="avatar-container" trigger="click">
-      <el-button>{{name}}</el-button>
+      <el-button >admin</el-button>
       <el-dropdown-menu class="user-dropdown" slot="dropdown">
-        <router-link class="inlineBlock" to="/">
-          <el-dropdown-item>
-            Home
-          </el-dropdown-item>
-        </router-link>
+        <el-dropdown-item divided v-for="item in roles" :key="item.id">
+          <span @click="switchRole(item)" style="display:block;">{{item}}</span>
+        </el-dropdown-item>
         <el-dropdown-item divided>
-          <span @click="logout" style="display:block;">LogOut</span>
+          <span @click="logout" style="display:block;">登出</span>
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
@@ -29,10 +27,7 @@ export default {
     Hamburger
   },
   computed: {
-    ...mapGetters([
-      'sidebar',
-      'name'
-    ])
+    ...mapGetters(['sidebar', 'name', 'roles'])
   },
   methods: {
     toggleSideBar() {
@@ -42,6 +37,9 @@ export default {
       this.$store.dispatch('LogOut').then(() => {
         location.reload() // 为了重新实例化vue-router对象 避免bug
       })
+    },
+    switchRole(role) {
+      this.$store.dispatch('SwitchRole', role)
     }
   }
 }
@@ -85,6 +83,13 @@ export default {
         font-size: 12px;
       }
     }
+  }
+  .el-dropdown-link {
+    cursor: pointer;
+    color: #409EFF;
+  }
+  .el-icon-arrow-down {
+    font-size: 12px;
   }
 }
 </style>

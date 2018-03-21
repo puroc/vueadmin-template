@@ -29,14 +29,14 @@ export const constantRouterMap = [
   {
     path: '/dashboard',
     component: Layout,
-    // redirect: '/dashboard',
     name: '仪表盘',
     children: [{
       path: 'index',
       name: 'dashboard',
       component: () => import('@/views/dashboard/index'),
       meta: { title: '仪表盘', icon: 'example' }
-    }]
+    }],
+    permission: 'dashboard'
   },
   {
     path: '/org',
@@ -49,7 +49,8 @@ export const constantRouterMap = [
         component: () => import('@/views/org/index'),
         meta: { title: '机构管理', icon: 'example' }
       }
-    ]
+    ],
+    permission: 'org'
   },
   {
     path: '/user',
@@ -62,7 +63,8 @@ export const constantRouterMap = [
         component: () => import('@/views/user/index'),
         meta: { title: '用户管理', icon: 'example' }
       }
-    ]
+    ],
+    permission: 'user'
   },
   {
     path: '/role',
@@ -75,7 +77,8 @@ export const constantRouterMap = [
         component: () => import('@/views/role/index'),
         meta: { title: '角色管理', icon: 'example' }
       }
-    ]
+    ],
+    permission: 'role'
   },
 
   { path: '*', redirect: '/404', hidden: true }

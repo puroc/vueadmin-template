@@ -5,7 +5,11 @@ const user = {
   state: {
     token: getToken(),
     name: '',
-    roles: ['1']
+    roles: [
+      { 'id': 1, 'name': 1 },
+      { 'id': 2, 'name': 2 }
+    ],
+    currentRole: ''
   },
 
   mutations: {
@@ -17,6 +21,9 @@ const user = {
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles
+    },
+    SET_CURRENT_ROLE: (state, role) => {
+      state.currentRole = role
     }
   },
 
@@ -73,7 +80,12 @@ const user = {
         removeToken()
         resolve()
       })
+    },
+
+    SwitchRole({ commit }, role) {
+      commit('SET_CURRENT_ROLE', role)
     }
+
   }
 }
 

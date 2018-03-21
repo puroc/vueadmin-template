@@ -15,9 +15,20 @@ export default {
   components: { SidebarItem, ScrollBar },
   computed: {
     ...mapGetters([
-      'sidebar'
+      'sidebar',
+      'roles'
     ]),
     routes() {
+      // const isDelete = []
+      // const routes = this.$router.options.routes
+      console.log(this.$router.options.routes)
+
+      const newRoutes = this.$router.options.routes.filter(element => !element.permission)
+
+      console.log(newRoutes)
+
+      this.$router.options.routes = newRoutes
+
       return this.$router.options.routes
     },
     isCollapse() {
