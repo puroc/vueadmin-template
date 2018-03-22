@@ -10,7 +10,7 @@
 import { mapGetters } from 'vuex'
 import SidebarItem from './SidebarItem'
 import ScrollBar from '@/components/ScrollBar'
-
+import { constantRouterMap } from '@/router'
 export default {
   components: { SidebarItem, ScrollBar },
   computed: {
@@ -19,18 +19,15 @@ export default {
       'permissions'
     ]),
     routes() {
-      // const isDelete = []
-      // const routes = this.$router.options.routes
-      console.log('sidebar:' + this.$router.options.routes)
-
-      // const newRoutes = this.$router.options.routes.filter(element => {
-      //   this.permissions.includes(element.permission)
-      // })
-
-      // console.log(newRoutes)
-
-      // this.$router.options.routes = newRoutes
-
+      const newRoutes = constantRouterMap.filter(element => {
+        // 如果是不需要权限控制的路由，则保留在路由表中
+        if (!element.permission) {
+          return true
+        }
+        // 否则，判断该条路由是否在当前权限点集合中，若存在则保留在路由表中，否则去除
+        return this.permissions.includes(element.permission)
+      })
+      this.$router.options.routes = newRoutes
       return this.$router.options.routes
     },
     isCollapse() {

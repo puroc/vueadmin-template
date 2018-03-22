@@ -28,8 +28,6 @@
 
 <script>
 import { isvalidUsername } from '@/utils/validate'
-import { mapGetters } from 'vuex'
-import { constantRouterMap } from '@/router'
 export default {
   name: 'login',
   data() {
@@ -60,11 +58,6 @@ export default {
       pwdType: 'password'
     }
   },
-  computed: {
-    ...mapGetters([
-      'permissions'
-    ])
-  },
   methods: {
     showPwd() {
       if (this.pwdType === 'password') {
@@ -79,22 +72,6 @@ export default {
           this.loading = true
           this.$store.dispatch('Login', this.loginForm).then(() => {
             this.loading = false
-
-            console.log('userbefore:' + this.$router.options.routes)
-            console.log('permisssions: ' + this.permissions)
-
-            const newRoutes = constantRouterMap.filter(element => {
-              console.log(element.permission)
-              console.log(this.permissions.includes(element.permission))
-              if (!element.permission) {
-                return true
-              }
-              return this.permissions.includes(element.permission)
-            })
-
-            this.$router.options.routes = newRoutes
-            console.log('userafter:' + this.$router.options.routes)
-
             this.$router.push({ path: '/' })
           }).catch((err) => {
             this.loading = false
