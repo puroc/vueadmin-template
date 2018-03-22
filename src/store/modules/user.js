@@ -1,4 +1,5 @@
 import { login, logout, getInfo } from '@/api/login'
+
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const user = {
@@ -40,27 +41,31 @@ const user = {
     // 登录
     Login({ commit }, { username, password }) {
       return new Promise((resolve, reject) => {
-        login(username.trim(), password.trim()).then(response => {
-          const token = response.data.payloads[0].token
-          setToken(token)
-          commit('SET_TOKEN', token)
-          resolve()
-        }).catch(error => {
-          reject(error)
-        })
+        login(username.trim(), password.trim())
+          .then(response => {
+            const token = response.data.payloads[0].token
+            setToken(token)
+            commit('SET_TOKEN', token)
+            resolve()
+          })
+          .catch(error => {
+            reject(error)
+          })
       })
     },
 
     // 登出
     LogOut({ commit, state }) {
       return new Promise((resolve, reject) => {
-        logout(state.token).then(() => {
-          commit('SET_TOKEN', '')
-          removeToken()
-          resolve()
-        }).catch(error => {
-          reject(error)
-        })
+        logout(state.token)
+          .then(() => {
+            commit('SET_TOKEN', '')
+            removeToken()
+            resolve()
+          })
+          .catch(error => {
+            reject(error)
+          })
       })
     },
 
@@ -73,6 +78,7 @@ const user = {
       })
     },
 
+    // 切换角色
     SwitchRole({ commit }, role) {
       commit('SET_CURRENT_ROLE', role)
     },
@@ -80,21 +86,22 @@ const user = {
     // 获取用户信息
     GetInfo({ commit }, token) {
       return new Promise((resolve, reject) => {
-        getInfo().then(response => {
-          const user = response.data.payloads[0].user
-          commit('SET_ROLES', user.roles)
-          commit('SET_INFO', user)
-          // 默认取第一个角色
-          if (user.roles.length !== 0) {
-            commit('SET_CURRENT_ROLE', user.roles[0])
-          }
-          resolve()
-        }).catch(error => {
-          reject(error)
-        })
+        getInfo()
+          .then(response => {
+            const user = response.data.payloads[0].user
+            commit('SET_ROLES', user.roles)
+            commit('SET_INFO', user)
+            // 默认取第一个角色
+            if (user.roles.length !== 0) {
+              commit('SET_CURRENT_ROLE', user.roles[0])
+            }
+            resolve()
+          })
+          .catch(error => {
+            reject(error)
+          })
       })
     }
-
   }
 }
 
