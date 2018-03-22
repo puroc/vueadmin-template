@@ -41,13 +41,6 @@ const user = {
     Login({ commit }, { username, password }) {
       return new Promise((resolve, reject) => {
         login(username.trim(), password.trim()).then(response => {
-          const user = response.data.payloads[0].user
-          commit('SET_ROLES', user.roles)
-          commit('SET_INFO', user)
-          // 默认取第一个角色
-          if (user.roles.length !== 0) {
-            commit('SET_CURRENT_ROLE', user.roles[0])
-          }
           const token = response.data.payloads[0].token
           setToken(token)
           commit('SET_TOKEN', token)
