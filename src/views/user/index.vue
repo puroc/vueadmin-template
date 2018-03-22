@@ -45,7 +45,7 @@ export default {
     getUserList(orgId) {
       getUserListByOrgId(orgId)
         .then(response => {
-          this.users = response.data.payloads[0].users
+          this.users = response.data.payloads
         })
         .catch(error => {
           console.log(error)

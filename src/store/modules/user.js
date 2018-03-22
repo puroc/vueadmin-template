@@ -88,7 +88,7 @@ const user = {
       return new Promise((resolve, reject) => {
         getInfo()
           .then(response => {
-            const user = response.data.payloads[0].user
+            const user = response.data.payloads[0]
             commit('SET_ROLES', user.roles)
             commit('SET_INFO', user)
             // 默认取第一个角色
