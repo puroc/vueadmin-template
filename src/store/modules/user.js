@@ -1,15 +1,13 @@
-import { login, logout, getInfo } from '@/api/login'
+import { login, logout } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const user = {
   state: {
     token: getToken(),
     name: '',
-    roles: [
-      { 'id': 1, 'name': 1 },
-      { 'id': 2, 'name': 2 }
-    ],
-    currentRole: ''
+    roles: [],
+    currentRole: {},
+    permissions: []
   },
 
   mutations: {
@@ -23,7 +21,14 @@ const user = {
       state.roles = roles
     },
     SET_CURRENT_ROLE: (state, role) => {
-      state.currentRole = role
+      try {
+        state.currentRole = role
+        for (let i = 0; i < role.permissions.length; i++) {
+          state.permissions.push(role.permissions[i].code)
+        }
+      } catch (err) {
+        console.log(err)
+      }
     }
   },
 
@@ -34,25 +39,17 @@ const user = {
       const password = userInfo.password.trim()
       return new Promise((resolve, reject) => {
         login(username, password).then(response => {
-          const data = response.data
-          const token = data.payloads[0].token
-          setToken(token)
-          commit('SET_TOKEN', token)
-          resolve()
-        }).catch(error => {
-          reject(error)
-        })
-      })
-    },
-
-    // 获取用户信息
-    GetInfo({ commit }) {
-      return new Promise((resolve, reject) => {
-        getInfo().then(response => {
           const user = response.data.payloads[0].user
           commit('SET_ROLES', user.roles)
           commit('SET_NAME', user.name)
-          resolve(response)
+          // 默认取第一个角色
+          if (user.roles.length !== 0) {
+            commit('SET_CURRENT_ROLE', user.roles[0])
+          }
+          const token = response.data.payloads[0].token
+          setToken(token)
+          commit('SET_TOKEN', token)
+          resolve()
         }).catch(error => {
           reject(error)
         })
@@ -84,6 +81,10 @@ const user = {
 
     SwitchRole({ commit }, role) {
       commit('SET_CURRENT_ROLE', role)
+    },
+
+    GoMain() {
+
     }
 
   }

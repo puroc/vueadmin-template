@@ -16,18 +16,20 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'roles'
+      'permissions'
     ]),
     routes() {
       // const isDelete = []
       // const routes = this.$router.options.routes
-      console.log(this.$router.options.routes)
+      console.log('sidebar:' + this.$router.options.routes)
 
-      const newRoutes = this.$router.options.routes.filter(element => !element.permission)
+      // const newRoutes = this.$router.options.routes.filter(element => {
+      //   this.permissions.includes(element.permission)
+      // })
 
-      console.log(newRoutes)
+      // console.log(newRoutes)
 
-      this.$router.options.routes = newRoutes
+      // this.$router.options.routes = newRoutes
 
       return this.$router.options.routes
     },

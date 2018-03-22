@@ -3,10 +3,10 @@
     <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
     <breadcrumb></breadcrumb>
     <el-dropdown class="avatar-container" trigger="click">
-      <el-button >admin</el-button>
+      <el-button >{{name}}</el-button>
       <el-dropdown-menu class="user-dropdown" slot="dropdown">
-        <el-dropdown-item divided v-for="item in roles" :key="item.id">
-          <span @click="switchRole(item)" style="display:block;">{{item}}</span>
+        <el-dropdown-item divided v-for="role in roles" :key="role.id">
+          <span @click="switchRole(role)" style="display:block;">{{role.name}}</span>
         </el-dropdown-item>
         <el-dropdown-item divided>
           <span @click="logout" style="display:block;">登出</span>
