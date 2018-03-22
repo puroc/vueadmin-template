@@ -28,6 +28,8 @@
 
 <script>
 import { isvalidUsername } from '@/utils/validate'
+import { constantRouterMap } from '@/router'
+import { mapGetters } from 'vuex'
 export default {
   name: 'login',
   data() {
@@ -58,6 +60,11 @@ export default {
       pwdType: 'password'
     }
   },
+  computed: {
+    ...mapGetters([
+      'permissions'
+    ])
+  },
   methods: {
     showPwd() {
       if (this.pwdType === 'password') {
@@ -72,6 +79,18 @@ export default {
           this.loading = true
           this.$store.dispatch('Login', this.loginForm).then(() => {
             this.loading = false
+
+            const newRoutes = constantRouterMap.filter(element => {
+              // 如果是不需要权限控制的路由，则保留在路由表中
+              if (!element.permission) {
+                return true
+              }
+              // 否则，判断该条路由是否在当前权限点集合中，若存在则保留在路由表中，否则去除
+
+              return this.permissions.includes(element.permission)
+            })
+            this.$router.options.routes = newRoutes
+
             this.$router.push({ path: '/' })
           }).catch((err) => {
             this.loading = false
