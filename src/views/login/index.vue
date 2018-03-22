@@ -3,11 +3,11 @@
     <el-form autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left" label-width="0px"
       class="card-box login-form">
       <h3 class="title">vue-element-admin</h3>
-      <el-form-item prop="userName">
+      <el-form-item prop="username">
         <span class="svg-container svg-container_login">
           <svg-icon icon-class="user" />
         </span>
-        <el-input name="userName" type="text" v-model="loginForm.userName" autoComplete="on" placeholder="userName" />
+        <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on" placeholder="username" />
       </el-form-item>
       <el-form-item prop="password">
         <span class="svg-container">
@@ -49,11 +49,11 @@ export default {
     }
     return {
       loginForm: {
-        userName: '',
+        username: '',
         password: ''
       },
       loginRules: {
-        userName: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
         password: [{ required: true, trigger: 'blur', validator: validatePass }]
       },
       loading: false,

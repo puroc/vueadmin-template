@@ -1,9 +1,11 @@
-import { login, logout } from '@/api/login'
+import { login, logout, getInfo } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const user = {
   state: {
     token: getToken(),
+    username: '',
+    password: '',
     name: '',
     roles: [],
     currentRole: {},
@@ -14,8 +16,10 @@ const user = {
     SET_TOKEN: (state, token) => {
       state.token = token
     },
-    SET_NAME: (state, name) => {
+    SET_INFO: (state, { username, password, name }) => {
       state.name = name
+      state.username = username
+      state.password = password
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles
@@ -34,14 +38,12 @@ const user = {
 
   actions: {
     // 登录
-    Login({ commit }, userInfo) {
-      const username = userInfo.userName.trim()
-      const password = userInfo.password.trim()
+    Login({ commit }, { username, password }) {
       return new Promise((resolve, reject) => {
-        login(username, password).then(response => {
+        login(username.trim(), password.trim()).then(response => {
           const user = response.data.payloads[0].user
           commit('SET_ROLES', user.roles)
-          commit('SET_NAME', user.name)
+          commit('SET_INFO', user)
           // 默认取第一个角色
           if (user.roles.length !== 0) {
             commit('SET_CURRENT_ROLE', user.roles[0])
@@ -83,8 +85,22 @@ const user = {
       commit('SET_CURRENT_ROLE', role)
     },
 
-    GoMain() {
-
+    // 获取用户信息
+    GetInfo({ commit }, token) {
+      return new Promise((resolve, reject) => {
+        getInfo().then(response => {
+          const user = response.data.payloads[0].user
+          commit('SET_ROLES', user.roles)
+          commit('SET_INFO', user)
+          // 默认取第一个角色
+          if (user.roles.length !== 0) {
+            commit('SET_CURRENT_ROLE', user.roles[0])
+          }
+          resolve()
+        }).catch(error => {
+          reject(error)
+        })
+      })
     }
 
   }
