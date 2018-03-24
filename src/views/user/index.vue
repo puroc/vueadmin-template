@@ -31,7 +31,7 @@
     </el-table>
     <div style="position:fixed;bottom:0">
       <div class="block" style="padding-left:25%;padding-bottom:5%">
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[10,20, 50]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
+        <el-pagination @size-change="setPageSize" @current-change="changePageNum" :current-page="currentPage" :page-sizes="[1,10,20, 50]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalRecord">
         </el-pagination>
       </div>
     </div>
@@ -113,14 +113,16 @@
   </div>
 </template>
 <script>
-import { getUserListByOrgId } from '@/api/org';
-import { deleteUserByUsername, editUserByUsername, _addUser } from '@/api/user';
+import { getUserListByOrgId } from '@/api/org'
+import { deleteUserByUsername, editUserByUsername, _addUser } from '@/api/user'
 export default {
   data() {
     return {
       users: [],
       multipleSelection: [],
-      currentPage: 1,
+      currentPage: 0,
+      pageSize: 1,
+      totalRecord: 0,
       editDialogFormVisible: false,
       addDialogFormVisible: false,
       editUserForm: {},
@@ -140,9 +142,10 @@ export default {
   },
   methods: {
     getUserList(orgId) {
-      getUserListByOrgId(orgId)
+      getUserListByOrgId(orgId, { current: (this.currentPage - 1) * this.pageSize + 1, size: this.pageSize })
         .then(response => {
           this.users = response.data.payloads
+          this.totalRecord = response.data.totalNum
         })
         .catch(error => {
           console.log(error)
@@ -294,11 +297,12 @@ export default {
     handleSelectionChange() {
       alert('handleSelectionChange')
     },
-    handleCurrentChange() {
-      alert('handleCurrentChange')
+    changePageNum(pageNum) {
+      this.currentPage = pageNum
+      this.getUserList(1)
     },
-    handleSizeChange() {
-      alert('handleSizeChange')
+    setPageSize(pageSize) {
+      this.pageSize = pageSize
     }
   }
 }

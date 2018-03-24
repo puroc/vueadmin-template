@@ -1,8 +1,9 @@
 import request from '@/utils/request'
 
-export function getUserListByOrgId(orgId) {
+export function getUserListByOrgId(orgId, params) {
   return request({
     url: '/api/idm/org/' + orgId + '/users',
-    method: 'get'
+    method: 'get',
+    params
   })
 }
