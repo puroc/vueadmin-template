@@ -1,4 +1,4 @@
-import { login, logout, getInfo } from '@/api/login'
+import { _login, _logout, _getInfo } from '@/api/login'
 
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
@@ -28,6 +28,7 @@ const user = {
     SET_CURRENT_ROLE: (state, role) => {
       try {
         state.currentRole = role
+        state.permissions = {}
         for (let i = 0; i < role.permissions.length; i++) {
           state.permissions.push(role.permissions[i].code)
         }
@@ -41,7 +42,7 @@ const user = {
     // 登录
     Login({ commit }, { username, password }) {
       return new Promise((resolve, reject) => {
-        login(username.trim(), password.trim())
+        _login(username.trim(), password.trim())
           .then(response => {
             const token = response.data.payloads[0].token
             setToken(token)
@@ -57,7 +58,7 @@ const user = {
     // 登出
     LogOut({ commit, state }) {
       return new Promise((resolve, reject) => {
-        logout(state.token)
+        _logout(state.token)
           .then(() => {
             commit('SET_TOKEN', '')
             removeToken()
@@ -86,7 +87,7 @@ const user = {
     // 获取用户信息
     GetInfo({ commit }, token) {
       return new Promise((resolve, reject) => {
-        getInfo()
+        _getInfo()
           .then(response => {
             const user = response.data.payloads[0]
             commit('SET_ROLES', user.roles)

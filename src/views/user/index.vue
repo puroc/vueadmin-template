@@ -115,7 +115,7 @@
 <script>
 import { _getUserListByOrgId } from '@/api/org'
 import { _deleteUser, _editUser, _addUser } from '@/api/user'
-import { deepCopy } from '@/utils/index'
+import { deepCopy, showMsg, showConfirmMsg } from '@/utils/index'
 export default {
   data() {
     return {
@@ -165,55 +165,29 @@ export default {
             .then(response => {
               if (response.data.resultCode === '1') {
                 this.getUserList(1)
-                this.$message({
-                  showClose: true,
-                  message: '修改成功',
-                  type: 'success',
-                  center: true
-                })
+                showMsg(this, 'success', '修改成功')
               } else {
-                this.$refs.editUserForm.resetFields()
-                this.$message({
-                  showClose: true,
-                  message: '修改失败',
-                  type: 'error',
-                  center: true
-                })
+                showMsg(this, 'error', '修改失败')
               }
             })
             .catch(error => {
               console.log(error)
             })
         } else {
-          console.log('error submit!!')
           return false
         }
       })
       this.editDialogFormVisible = false
     },
     deleteUser(row) {
-      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
+      showConfirmMsg(this, '此操作将永久删除该文件, 是否继续?')
         .then(() => {
           _deleteUser(row)
             .then(response => {
               if (response.data.resultCode === '1') {
-                this.$message({
-                  showClose: true,
-                  message: '删除成功',
-                  type: 'success',
-                  center: true
-                })
+                showMsg(this, 'success', '删除成功')
               } else {
-                this.$message({
-                  showClose: true,
-                  message: '删除失败',
-                  type: 'error',
-                  center: true
-                })
+                showMsg(this, 'error', '删除失败')
               }
               this.getUserList(1)
             })
@@ -222,10 +196,7 @@ export default {
             })
         })
         .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
+          showMsg(this, 'info', '已取消删除')
         })
     },
     addUser() {
@@ -234,27 +205,16 @@ export default {
           _addUser(this.addUserForm)
             .then(response => {
               if (response.data.resultCode === '1') {
-                this.$message({
-                  showClose: true,
-                  message: '添加成功',
-                  type: 'success',
-                  center: true
-                })
+                showMsg(this, 'success', '添加成功')
                 this.getUserList(1)
               } else {
-                this.$message({
-                  showClose: true,
-                  message: '添加失败',
-                  type: 'error',
-                  center: true
-                })
+                showMsg(this, 'error', '添加失败')
               }
             })
             .catch(error => {
               console.log(error)
             })
         } else {
-          console.log('error submit!!')
           return false
         }
       })

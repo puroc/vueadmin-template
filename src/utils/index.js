@@ -82,3 +82,20 @@ export function deepCopy(p) {
   }
   return c
 }
+
+export function showMsg(_this, type, msg) {
+  _this.$message({
+    showClose: true,
+    message: msg,
+    type: type,
+    center: true
+  })
+}
+
+export function showConfirmMsg(_this, msg) {
+  return _this.$confirm(msg, '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  })
+}

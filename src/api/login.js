@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function login(username, password) {
+export function _login(username, password) {
   return request({
     url: '/api/idm/user/login',
     method: 'post',
@@ -15,14 +15,14 @@ export function login(username, password) {
   })
 }
 
-export function getInfo() {
+export function _getInfo() {
   return request({
     url: '/api/idm/user/info',
     method: 'get'
   })
 }
 
-export function logout() {
+export function _logout() {
   return request({
     url: '/api/idm/user/logout',
     method: 'get'
