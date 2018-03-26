@@ -68,7 +68,7 @@
         </el-form>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancelEditUserDialog">取 消</el-button>
+        <el-button @click="editDialogFormVisible=false">取 消</el-button>
         <el-button type="primary" @click="editUser">确 定</el-button>
       </div>
     </el-dialog>
@@ -105,7 +105,7 @@
         </el-form>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancelAddUserDialog">取 消</el-button>
+        <el-button @click="addDialogFormVisible=false">取 消</el-button>
         <el-button type="primary" @click="addUser">确 定</el-button>
       </div>
     </el-dialog>
@@ -228,7 +228,6 @@ export default {
           })
         })
     },
-
     addUser() {
       this.$refs.addUserForm.validate(valid => {
         if (valid) {
@@ -269,16 +268,6 @@ export default {
       this.editDialogFormVisible = true
       this.editUserForm = deepCopy(row)
       this.editable = true
-    },
-    cancelAddUserDialog() {
-      this.addDialogFormVisible = false
-      this.resetForm('addUserForm')
-    },
-    cancelEditUserDialog() {
-      this.editDialogFormVisible = false
-      this.resetForm('editUserForm')
-      this.editUserForm = {}
-      console.log(this.users)
     },
     resetForm(formName) {
       if (this.$refs[formName]) {
