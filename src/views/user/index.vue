@@ -31,7 +31,7 @@
     </el-table>
     <div style="position:fixed;bottom:0">
       <div class="block" style="padding-left:25%;padding-bottom:5%">
-        <el-pagination @size-change="setPageSize" @current-change="changePageNum" :current-page="currentPage" :page-sizes="[1,10,20, 50]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalRecord">
+        <el-pagination @size-change="chanagePageSize" @current-change="changePageNum" :current-page="currentPage" :page-sizes="[1,10,20, 50]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalRecord">
         </el-pagination>
       </div>
     </div>
@@ -68,7 +68,7 @@
         </el-form>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="editDialogFormVisible = false">取 消</el-button>
+        <el-button @click="cancelEditUserDialog">取 消</el-button>
         <el-button type="primary" @click="editUser">确 定</el-button>
       </div>
     </el-dialog>
@@ -105,7 +105,7 @@
         </el-form>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="addDialogFormVisible = false">取 消</el-button>
+        <el-button @click="cancelAddUserDialog">取 消</el-button>
         <el-button type="primary" @click="addUser">确 定</el-button>
       </div>
     </el-dialog>
@@ -113,8 +113,9 @@
   </div>
 </template>
 <script>
-import { getUserListByOrgId } from '@/api/org'
-import { deleteUserByUsername, editUserByUsername, _addUser } from '@/api/user'
+import { _getUserListByOrgId } from '@/api/org'
+import { _deleteUser, _editUser, _addUser } from '@/api/user'
+import { deepCopy } from '@/utils/index'
 export default {
   data() {
     return {
@@ -142,7 +143,10 @@ export default {
   },
   methods: {
     getUserList(orgId) {
-      getUserListByOrgId(orgId, { current: (this.currentPage - 1) * this.pageSize + 1, size: this.pageSize })
+      _getUserListByOrgId(orgId, {
+        current: (this.currentPage - 1) * this.pageSize + 1,
+        size: this.pageSize
+      })
         .then(response => {
           this.users = response.data.payloads
           this.totalRecord = response.data.totalNum
@@ -157,9 +161,10 @@ export default {
     editUser() {
       this.$refs.editUserForm.validate(valid => {
         if (valid) {
-          editUserByUsername(this.editUserForm)
+          _editUser(this.editUserForm)
             .then(response => {
               if (response.data.resultCode === '1') {
+                this.getUserList(1)
                 this.$message({
                   showClose: true,
                   message: '修改成功',
@@ -193,7 +198,7 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          deleteUserByUsername(row.username)
+          _deleteUser(row)
             .then(response => {
               if (response.data.resultCode === '1') {
                 this.$message({
@@ -221,30 +226,6 @@ export default {
             type: 'info',
             message: '已取消删除'
           })
-        })
-    },
-    delete(row) {
-      deleteUserByUsername(row.username)
-        .then(response => {
-          if (response.data.resultCode === '1') {
-            this.$message({
-              showClose: true,
-              message: '删除成功',
-              type: 'success',
-              center: true
-            })
-          } else {
-            this.$message({
-              showClose: true,
-              message: '删除失败',
-              type: 'error',
-              center: true
-            })
-          }
-          this.getUserList(1)
-        })
-        .catch(error => {
-          console.log(error)
         })
     },
 
@@ -286,8 +267,18 @@ export default {
     },
     openEditUserDialog(row) {
       this.editDialogFormVisible = true
-      this.editUserForm = row
+      this.editUserForm = deepCopy(row)
       this.editable = true
+    },
+    cancelAddUserDialog() {
+      this.addDialogFormVisible = false
+      this.resetForm('addUserForm')
+    },
+    cancelEditUserDialog() {
+      this.editDialogFormVisible = false
+      this.resetForm('editUserForm')
+      this.editUserForm = {}
+      console.log(this.users)
     },
     resetForm(formName) {
       if (this.$refs[formName]) {
@@ -301,8 +292,9 @@ export default {
       this.currentPage = pageNum
       this.getUserList(1)
     },
-    setPageSize(pageSize) {
+    chanagePageSize(pageSize) {
       this.pageSize = pageSize
+      this.getUserList(1)
     }
   }
 }

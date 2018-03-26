@@ -1,13 +1,13 @@
 import request from '@/utils/request'
 
-export function deleteUserByUsername(username) {
+export function _deleteUser(user) {
   return request({
-    url: '/api/idm/user/' + username,
+    url: '/api/idm/user/' + user.username,
     method: 'delete'
   })
 }
 
-export function editUserByUsername(user) {
+export function _editUser(user) {
   return request({
     url: '/api/idm/user/' + user.username,
     method: 'put',
