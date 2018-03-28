@@ -31,7 +31,7 @@
     </el-table>
     <div style="position:fixed;bottom:0">
       <div class="block" style="padding-left:25%;padding-bottom:5%">
-        <el-pagination @size-change="chanagePageSize" @current-change="changePageNum" :current-page="currentPage" :page-sizes="[1,10,20, 50]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalRecord">
+        <el-pagination @size-change="chanagePageSize" @current-change="changePageNum" :current-page="currentPage" :page-sizes="pageSizeList" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalRecord">
         </el-pagination>
       </div>
     </div>
@@ -122,7 +122,8 @@ export default {
       users: [],
       multipleSelection: [],
       currentPage: 0,
-      pageSize: 1,
+      pageSizeList: [10, 30, 50],
+      pageSize: 10,
       totalRecord: 0,
       editDialogFormVisible: false,
       addDialogFormVisible: false,

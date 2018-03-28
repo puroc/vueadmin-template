@@ -1,8 +1,9 @@
 import { _login, _logout, _getInfo } from '@/api/login'
+import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const user = {
   state: {
-    token: '',
+    token: getToken(),
     username: '',
     password: '',
     name: '',
@@ -44,6 +45,7 @@ const user = {
           .then(response => {
             const token = response.data.payloads[0].token
             commit('SET_TOKEN', token)
+            setToken(token)
             resolve()
           })
           .catch(error => {
@@ -65,6 +67,7 @@ const user = {
         _logout(state.token)
           .then(() => {
             commit('SET_TOKEN', '')
+            removeToken()
             resolve()
           })
           .catch(error => {
@@ -77,6 +80,7 @@ const user = {
     FedLogOut({ commit }) {
       return new Promise(resolve => {
         commit('SET_TOKEN', '')
+        removeToken()
         resolve()
       })
     },
