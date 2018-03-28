@@ -1,10 +1,8 @@
 import { _login, _logout, _getInfo } from '@/api/login'
 
-import { getToken, setToken, removeToken } from '@/utils/auth'
-
 const user = {
   state: {
-    token: getToken(),
+    token: '',
     username: '',
     password: '',
     name: '',
@@ -28,7 +26,7 @@ const user = {
     SET_CURRENT_ROLE: (state, role) => {
       try {
         state.currentRole = role
-        state.permissions = {}
+        state.permissions = []
         for (let i = 0; i < role.permissions.length; i++) {
           state.permissions.push(role.permissions[i].code)
         }
@@ -41,17 +39,23 @@ const user = {
   actions: {
     // 登录
     Login({ commit }, { username, password }) {
-      return new Promise((resolve, reject) => {
+      function login(resolve, reject) {
         _login(username.trim(), password.trim())
           .then(response => {
             const token = response.data.payloads[0].token
-            setToken(token)
             commit('SET_TOKEN', token)
             resolve()
           })
           .catch(error => {
             reject(error)
           })
+      }
+      return new Promise((resolve, reject) => {
+        login(resolve, reject)
+        setInterval(function() {
+          console.log('re-login to refresh the token')
+          login(resolve, reject)
+        }, 30 * 60 * 1000)
       })
     },
 
@@ -61,7 +65,6 @@ const user = {
         _logout(state.token)
           .then(() => {
             commit('SET_TOKEN', '')
-            removeToken()
             resolve()
           })
           .catch(error => {
@@ -74,7 +77,6 @@ const user = {
     FedLogOut({ commit }) {
       return new Promise(resolve => {
         commit('SET_TOKEN', '')
-        removeToken()
         resolve()
       })
     },
