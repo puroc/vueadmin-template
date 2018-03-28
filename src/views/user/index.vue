@@ -5,6 +5,7 @@
         <el-row>
           <el-col :span="24">
             <el-button type="primary" size="medium" @click="openAddUserDialog">添加</el-button>
+            <el-button type="primary" size="medium" @click="batchDeleteUsers">删除</el-button>
           </el-col>
         </el-row>
       </div>
@@ -113,7 +114,7 @@
   </div>
 </template>
 <script>
-import { _getUserListByOrgId } from '@/api/org'
+import { _getUserListByOrgId, _deleteUserList } from '@/api/org'
 import { _deleteUser, _editUser, _addUser } from '@/api/user'
 import { deepCopy, showMsg, showConfirmMsg } from '@/utils/index'
 export default {
@@ -131,6 +132,7 @@ export default {
       addUserForm: {},
       formLabelWidth: '70px',
       editable: true,
+      batchDeleteUserList: [],
       validateUserRules: {
         name: [
           { required: true, message: '请输入活动名称', trigger: 'blur' },
@@ -235,8 +237,8 @@ export default {
         this.$refs[formName].resetFields()
       }
     },
-    handleSelectionChange() {
-      alert('handleSelectionChange')
+    handleSelectionChange(userList) {
+      this.batchDeleteUserList = userList
     },
     changePageNum(pageNum) {
       this.currentPage = pageNum
@@ -244,6 +246,10 @@ export default {
     },
     chanagePageSize(pageSize) {
       this.pageSize = pageSize
+      this.getUserList(1)
+    },
+    batchDeleteUsers() {
+      _deleteUserList(1, this.batchDeleteUserList)
       this.getUserList(1)
     }
   }

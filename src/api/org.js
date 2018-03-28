@@ -7,3 +7,13 @@ export function _getUserListByOrgId(orgId, params) {
     params
   })
 }
+
+export function _deleteUserList(orgId, userList) {
+  return request({
+    url: '/api/idm/org/' + orgId + '/users',
+    method: 'delete',
+    data: {
+      payloads: userList
+    }
+  })
+}
