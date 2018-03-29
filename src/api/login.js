@@ -28,3 +28,10 @@ export function _logout() {
     method: 'get'
   })
 }
+
+export function _refreshToken() {
+  return request({
+    url: '/api/idm/user/token',
+    method: 'get'
+  })
+}

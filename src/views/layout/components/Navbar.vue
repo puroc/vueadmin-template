@@ -3,7 +3,7 @@
     <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
     <breadcrumb></breadcrumb>
     <el-dropdown class="avatar-container" trigger="click">
-      <el-button >{{username}}</el-button>
+      <el-button>{{username}}</el-button>
       <el-dropdown-menu class="user-dropdown" slot="dropdown">
         <el-dropdown-item divided v-for="role in roles" :key="role.id">
           <span @click="switchRole(role)" style="display:block;">{{role.name}}</span>
@@ -28,6 +28,19 @@ export default {
   },
   computed: {
     ...mapGetters(['sidebar', 'name', 'username', 'roles'])
+  },
+  mounted() {
+    const _this = this
+    setInterval(function() {
+      _this.$store
+        .dispatch('RefreshToken')
+        // .then(() => {
+        //   console.log(_this.$store.getters.token)
+        // })
+        .catch(error => {
+          console.log(error)
+        })
+    }, 60 * 1000)
   },
   methods: {
     toggleSideBar() {
@@ -86,7 +99,7 @@ export default {
   }
   .el-dropdown-link {
     cursor: pointer;
-    color: #409EFF;
+    color: #409eff;
   }
   .el-icon-arrow-down {
     font-size: 12px;

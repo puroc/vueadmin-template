@@ -1,4 +1,4 @@
-import { _login, _logout, _getInfo } from '@/api/login'
+import { _login, _logout, _getInfo, _refreshToken } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const user = {
@@ -40,7 +40,7 @@ const user = {
   actions: {
     // 登录
     Login({ commit }, { username, password }) {
-      function login(resolve, reject) {
+      return new Promise((resolve, reject) => {
         _login(username.trim(), password.trim())
           .then(response => {
             const token = response.data.payloads[0].token
@@ -51,13 +51,22 @@ const user = {
           .catch(error => {
             reject(error)
           })
-      }
+      })
+    },
+
+    // 刷新token
+    RefreshToken({ commit }) {
       return new Promise((resolve, reject) => {
-        login(resolve, reject)
-        setInterval(function() {
-          console.log('re-login to refresh the token')
-          login(resolve, reject)
-        }, 30 * 60 * 1000)
+        _refreshToken().then(
+          response => {
+            const token = response.data.payloads[0].token
+            commit('SET_TOKEN', token)
+            setToken(token)
+            resolve()
+          }
+        ).catch(error => {
+          reject(error)
+        })
       })
     },
 
