@@ -1,5 +1,4 @@
 <template>
-  <scroll-bar>
     <el-menu mode="vertical" unique-opened :default-active="$route.path" :collapse="isCollapse" background-color="#304156" text-color="#fff" active-text-color="#409EFF">
       <sidebar-item :routes="routes"></sidebar-item>
     </el-menu>
@@ -14,12 +13,7 @@ import { constantRouterMap } from '@/router'
 export default {
   components: { SidebarItem, ScrollBar },
   computed: {
-    ...mapGetters([
-      'sidebar',
-      'permissions',
-      'token',
-      'roles'
-    ]),
+    ...mapGetters(['sidebar', 'permissions', 'token', 'roles']),
     routes() {
       const newRoutes = constantRouterMap.filter(element => {
         // 如果是不需要权限控制的路由，则保留在路由表中
