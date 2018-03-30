@@ -1,14 +1,14 @@
 <template>
   <div>
     <div style="height:60px">
-      <div style="line-height:60px;margin-left:30px">
+      <div style="line-height:60px;margin-left:30px;">
         <el-row>
-          <el-col :span="18">
+          <el-col :span="16">
             <el-button type="primary" size="medium" @click="openAddUserDialog">添加</el-button>
             <el-button type="primary" size="medium" @click="batchDeleteUsers">删除</el-button>
           </el-col>
-          <el-col :span="6">
-            <div style="margin-top: 15px;">
+          <el-col :span="8">
+            <div style="line-height:60px">
               <el-input placeholder="请输入内容" v-model="searchInputModel" class="input-with-select">
                 <el-select v-model="searchSelectModel" slot="prepend" placeholder="请选择">
                   <el-option label="姓名" value="name"></el-option>
