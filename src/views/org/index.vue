@@ -36,8 +36,8 @@
 </template>
 
 <script>
-import { _getOrgTree, _addOrg } from '@/api/org';
-import { resetForm } from '@/utils/index';
+import { _getOrgTree, _addOrg } from '@/api/org'
+import { resetForm } from '@/utils/index'
 export default {
   data() {
     return {
@@ -90,8 +90,8 @@ export default {
       if (!this.selectedOrg.label) {
         return
       }
-      this.addOrgDialogFormVisible = true
       resetForm(this, 'addOrgForm')
+      this.addOrgDialogFormVisible = true
       this.addOrgModel.upperOrg = this.selectedOrg
     }
   }
