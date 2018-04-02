@@ -129,7 +129,7 @@
 <script>
 import { _getUserListByOrgId, _deleteUserList } from '@/api/org'
 import { _deleteUser, _editUser, _addUser } from '@/api/user'
-import { deepCopy, showMsg, showConfirmMsg } from '@/utils/index'
+import { deepCopy, showMsg, showConfirmMsg, resetForm } from '@/utils/index'
 export default {
   data() {
     return {
@@ -241,17 +241,12 @@ export default {
     },
     openAddUserDialog() {
       this.addDialogFormVisible = true
-      this.resetForm('addUserForm')
+      resetForm(this, 'addUserForm')
     },
     openEditUserDialog(row) {
       this.editDialogFormVisible = true
       this.editUserModel = deepCopy(row)
       this.editable = true
-    },
-    resetForm(formName) {
-      if (this.$refs[formName]) {
-        this.$refs[formName].resetFields()
-      }
     },
     handleSelectionChange(userList) {
       this.batchDeleteUserList = userList
