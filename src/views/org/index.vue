@@ -36,8 +36,9 @@
 </template>
 
 <script>
-import { _getOrgTree, _addOrg } from '@/api/org'
-import { resetForm } from '@/utils/index'
+import { _getOrgTree, _addOrg, _deleteOrg } from '@/api/org';
+import { resetForm } from '@/utils/index';
+import { Message } from 'element-ui';
 export default {
   data() {
     return {
@@ -84,7 +85,28 @@ export default {
           console.log(error)
         })
     },
-    deleteOrg() {},
+    deleteOrg() {
+      // 如果没有选择机构，则不允许删除
+      if (!this.selectedOrg.label) {
+        return
+      }
+      _deleteOrg(this.selectedOrg.id)
+        .then(response => {
+          if (response.data.resultCode === '10001') {
+            Message({
+              message: response.data.message,
+              type: 'error',
+              duration: 5 * 1000
+            })
+          } else {
+            this.getOrgTree(1)
+          }
+          this.selectedOrg = {}
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
     openAddOrgDialog() {
       // 没有选择上级机构时，不允许添加机构
       if (!this.selectedOrg.label) {

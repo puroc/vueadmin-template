@@ -34,3 +34,10 @@ export function _addOrg(upperOrgId, payloads) {
     }
   })
 }
+
+export function _deleteOrg(orgId) {
+  return request({
+    url: '/api/idm/org/' + orgId,
+    method: 'delete'
+  })
+}
