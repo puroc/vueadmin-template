@@ -17,3 +17,10 @@ export function _deleteUserList(orgId, userList) {
     }
   })
 }
+
+export function _getOrgTree(orgId) {
+  return request({
+    url: '/api/idm/org/' + orgId + '/tree',
+    method: 'get'
+  })
+}
