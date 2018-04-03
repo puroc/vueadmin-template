@@ -163,27 +163,21 @@ export default {
     ...mapGetters(['currentOrg'])
   },
   created() {
-    this.getUserList(this.currentOrg.id)
+    this.getUserList()
   },
   watch: {
-    'storeState.currentOrg': {
-      handler: (val, oldVal) => {
-        // 要执行的任务
-        // 这里不知道怎么才能修改到this.data的数据，有知道的麻烦告知
-        // 现在知道的就是通过直接修改Store.state的方式来更新数据，当然效果和修改this.data是一样的
-        alert('change')
-      },
-      // 深度观察
-      deep: true
+    // 观察currentOrg是否变化，若变化，则根据最新的currentOrg获取用户
+    'storeState.user.currentOrg': function() {
+      this.getUserList()
     }
   },
   methods: {
-    getUserList(orgId) {
+    getUserList() {
       const params = {
         current: this.currentPage === 1 ? 0 : this.currentPage * this.pageSize,
         size: this.pageSize
       }
-      _getUserListByOrgId(orgId, params)
+      _getUserListByOrgId(this.currentOrg.id, params)
         .then(response => {
           this.users = response.data.payloads
           this.totalRecord = response.data.totalNum
@@ -201,7 +195,7 @@ export default {
           _editUser(this.editUserModel)
             .then(response => {
               if (response.data.resultCode === '1') {
-                this.getUserList(this.currentOrg.id)
+                this.getUserList()
                 showMsg(this, 'success', '修改成功')
               } else {
                 showMsg(this, 'error', '修改失败')
@@ -226,7 +220,7 @@ export default {
               } else {
                 showMsg(this, 'error', '删除失败')
               }
-              this.getUserList(this.currentOrg.id)
+              this.getUserList()
             })
             .catch(error => {
               console.log(error)
@@ -243,7 +237,7 @@ export default {
             .then(response => {
               if (response.data.resultCode === '1') {
                 showMsg(this, 'success', '添加成功')
-                this.getUserList(this.currentOrg.id)
+                this.getUserList()
               } else {
                 showMsg(this, 'error', '添加失败')
               }
@@ -271,17 +265,17 @@ export default {
     },
     changePageNum(pageNum) {
       this.currentPage = pageNum
-      this.getUserList(this.currentOrg.id)
+      this.getUserList()
     },
     chanagePageSize(pageSize) {
       this.pageSize = pageSize
-      this.getUserList(this.currentOrg.id)
+      this.getUserList()
     },
     batchDeleteUsers() {
       showConfirmMsg(this, '此操作将永久删除该用户, 是否继续?')
         .then(() => {
           _deleteUserList(this.batchDeleteUserList)
-          this.getUserList(this.currentOrg.id)
+          this.getUserList()
         })
         .catch(error => {
           console.log(error)

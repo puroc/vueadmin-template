@@ -10,7 +10,7 @@
         </el-row>
       </div>
     </div>
-    <el-tree node-key="id" default-expand-all :data="orgTree" :props="defaultProps" @node-click="handleNodeClick">
+    <el-tree node-key="id" default-expand-all :expand-on-click-node="false" :data="orgTree" :props="defaultProps" @node-click="handleNodeClick">
     </el-tree>
 
     <el-dialog title="添加机构" :visible.sync="addOrgDialogFormVisible">
