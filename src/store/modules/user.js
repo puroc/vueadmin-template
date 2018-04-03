@@ -1,5 +1,5 @@
-import { _login, _logout, _getInfo, _refreshToken } from '@/api/login'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { _login, _logout, _getInfo, _refreshToken } from '@/api/login';
+import { getToken, setToken, removeToken } from '@/utils/auth';
 
 const user = {
   state: {
@@ -35,6 +35,9 @@ const user = {
       } catch (err) {
         console.log(err)
       }
+    },
+    SET_CURRENT_ORG: (state, org) => {
+      state.currentOrg = org
     }
   },
 
@@ -58,16 +61,16 @@ const user = {
     // 刷新token
     RefreshToken({ commit }) {
       return new Promise((resolve, reject) => {
-        _refreshToken().then(
-          response => {
+        _refreshToken()
+          .then(response => {
             const token = response.data.payloads[0].token
             commit('SET_TOKEN', token)
             setToken(token)
             resolve()
-          }
-        ).catch(error => {
-          reject(error)
-        })
+          })
+          .catch(error => {
+            reject(error)
+          })
       })
     },
 
@@ -118,6 +121,9 @@ const user = {
             reject(error)
           })
       })
+    },
+    SwitchOrg({ commit }, org) {
+      commit('SET_CURRENT_ORG', org)
     }
   }
 }

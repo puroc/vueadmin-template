@@ -1,19 +1,24 @@
 <template>
   <section class="app-main">
-    <transition name="fade" mode="out-in">
-      <!-- <router-view :key="key"></router-view> -->
-      <router-view></router-view>
-    </transition>
+    <el-row>
+      <el-col :span="4">
+        <Org></Org>
+      </el-col>
+      <el-col :span="20">
+        <transition name="fade" mode="out-in">
+          <router-view></router-view>
+        </transition>
+      </el-col>
+    </el-row>
   </section>
 </template>
 
 <script>
+import Org from '@/components/Org'
 export default {
   name: 'AppMain',
-  computed: {
-    // key() {
-    //   return this.$route.name !== undefined ? this.$route.name + +new Date() : this.$route + +new Date()
-    // }
+  components: {
+    Org
   }
 }
 </script>

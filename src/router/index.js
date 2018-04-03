@@ -38,20 +38,20 @@ export const constantRouterMap = [
     }],
     permission: 'dashboard'
   },
-  {
-    path: '/org',
-    component: Layout,
-    name: '机构管理',
-    children: [
-      {
-        path: 'index',
-        name: 'Org',
-        component: () => import('@/views/org/index'),
-        meta: { title: '机构管理', icon: 'example' }
-      }
-    ],
-    permission: 'org'
-  },
+  // {
+  //   path: '/org',
+  //   component: Layout,
+  //   name: '机构管理',
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: 'Org',
+  //       component: () => import('@/views/org/index'),
+  //       meta: { title: '机构管理', icon: 'example' }
+  //     }
+  //   ],
+  //   permission: 'org'
+  // },
   {
     path: '/user',
     component: Layout,

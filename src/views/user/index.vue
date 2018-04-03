@@ -199,7 +199,7 @@ export default {
       this.editDialogFormVisible = false
     },
     deleteUser(row) {
-      showConfirmMsg(this, '此操作将永久删除该文件, 是否继续?')
+      showConfirmMsg(this, '此操作将永久删除该用户, 是否继续?')
         .then(() => {
           _deleteUser(row)
             .then(response => {
