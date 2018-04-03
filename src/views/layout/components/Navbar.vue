@@ -1,7 +1,8 @@
 <template>
   <el-menu class="navbar" mode="horizontal">
     <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
-    <breadcrumb></breadcrumb>
+    <!-- <breadcrumb></breadcrumb> -->
+    <el-button type="text" @click="switchOrg">文字按钮</el-button>
     <el-dropdown class="avatar-container" trigger="click">
       <el-button>{{username}}</el-button>
       <el-dropdown-menu class="user-dropdown" slot="dropdown">
@@ -53,6 +54,9 @@ export default {
     },
     switchRole(role) {
       this.$store.dispatch('SwitchRole', role)
+    },
+    switchOrg() {
+      alert('xixi')
     }
   }
 }

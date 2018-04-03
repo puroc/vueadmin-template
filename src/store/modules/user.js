@@ -9,6 +9,7 @@ const user = {
     name: '',
     roles: [],
     currentRole: {},
+    currentOrg: {},
     permissions: []
   },
 

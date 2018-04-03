@@ -28,7 +28,6 @@
 
 <script>
 import { isvalidUsername } from '@/utils/validate'
-import { mapGetters } from 'vuex'
 export default {
   name: 'login',
   data() {
@@ -58,11 +57,6 @@ export default {
       loading: false,
       pwdType: 'password'
     }
-  },
-  computed: {
-    ...mapGetters([
-      'permissions'
-    ])
   },
   methods: {
     showPwd() {

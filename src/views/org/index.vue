@@ -12,7 +12,7 @@
     </div>
     <el-row>
       <el-col :span="6" style="border:1px solid gray;height:600px;">
-        <el-tree node-key="id" :default-expanded-keys="[1]" :data="orgTree" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+        <el-tree node-key="id" :default-expanded-keys="roleBindOrg" :data="orgTree" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
       </el-col>
       <el-col :span="18" style="border:1px solid gray;height:600px;">
         ahha
@@ -36,28 +36,43 @@
 </template>
 
 <script>
-import { _getOrgTree, _addOrg, _deleteOrg } from '@/api/org';
-import { resetForm } from '@/utils/index';
-import { Message } from 'element-ui';
+import { _getOrgTree, _addOrg, _deleteOrg } from '@/api/org'
+import { resetForm } from '@/utils/index'
+import { Message } from 'element-ui'
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
+      // 机构树数据
       orgTree: [],
       defaultProps: {
         children: 'children',
         label: 'label'
       },
+      // 选中的机构
       selectedOrg: {},
+      // 添加机构表单对应的model
       addOrgModel: {
         upperOrg: {}
       },
-      addOrgDialogFormVisible: false
+      // 控制添加机构dialog是否可见
+      addOrgDialogFormVisible: false,
+      // 角色绑定机构
+      roleBindOrg: []
     }
   },
+  computed: {
+    // 获取当前角色
+    ...mapGetters(['currentRole'])
+  },
   created() {
-    this.getOrgTree(1)
+    // 将用户角色绑定的机构设置为默认展开的机构
+    this.roleBindOrg.push(this.currentRole.orgId)
+    // 获取角色绑定的机构树
+    this.getOrgTree(this.currentRole.orgId)
   },
   methods: {
+    // 获取机构树
     getOrgTree(orgId) {
       _getOrgTree(orgId)
         .then(response => {
@@ -67,9 +82,11 @@ export default {
           console.log(error)
         })
     },
+    // 处理机构数节点点击事件
     handleNodeClick(data) {
       this.selectedOrg = data
     },
+    // 添加机构
     addOrg() {
       this.addOrgDialogFormVisible = false
       const org = []
@@ -78,6 +95,7 @@ export default {
       })
       _addOrg(this.addOrgModel.upperOrg.id, org)
         .then(() => {
+          // 添加成功，将选中的机构清空，同时获取最新的机构树
           this.selectedOrg = {}
           this.getOrgTree(1)
         })
@@ -85,6 +103,7 @@ export default {
           console.log(error)
         })
     },
+    // 删除机构
     deleteOrg() {
       // 如果没有选择机构，则不允许删除
       if (!this.selectedOrg.label) {
@@ -107,13 +126,16 @@ export default {
           console.log(error)
         })
     },
+    // 打开添加机构对话框
     openAddOrgDialog() {
       // 没有选择上级机构时，不允许添加机构
       if (!this.selectedOrg.label) {
         return
       }
+      // 充值表单内容
       resetForm(this, 'addOrgForm')
       this.addOrgDialogFormVisible = true
+      // 将选中的机构设置为上级机构，即在该机构下面添加机构
       this.addOrgModel.upperOrg = this.selectedOrg
     }
   }

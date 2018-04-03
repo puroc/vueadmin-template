@@ -1,14 +1,9 @@
 <template>
   <div class="menu-wrapper">
-    <el-menu-item index="1">
+    <el-menu-item index="1" :class="{'submenu-title-noDropdown':!isNest}">
       <i class="el-icon-menu"></i>
-      <span slot="title">logo</span>
       <img src="" alt="">
     </el-menu-item>
-    <el-menu-item index="2">
-      <span slot="title">沈阳数融科技有限公司</span>
-    </el-menu-item>
-
     <template v-for="item in routes" v-if="!item.hidden&&item.children">
 
       <router-link v-if="item.children.length===1 && !item.children[0].children && !item.alwaysShow" :to="item.path+'/'+item.children[0].path" :key="item.children[0].name">
