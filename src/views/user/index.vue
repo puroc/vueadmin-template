@@ -24,7 +24,7 @@
       </div>
     </div>
     <el-table ref="multipleTable" border stripe highlight-current-row :data="users" tooltip-effect="dark" style="width: 100%" max-height="600" @selection-change="handleSelectionChange">
-      <el-table-column type="selection">
+      <el-table-column type="selection" disabled>
       </el-table-column>
       <el-table-column prop="name" label="姓名">
       </el-table-column>
@@ -127,9 +127,10 @@
   </div>
 </template>
 <script>
-import { _getUserListByOrgId, _deleteUserList } from '@/api/org'
-import { _deleteUser, _editUser, _addUser } from '@/api/user'
+import { _getUserListByOrgId } from '@/api/org'
+import { _deleteUser, _editUser, _addUser, _deleteUserList } from '@/api/user'
 import { deepCopy, showMsg, showConfirmMsg, resetForm } from '@/utils/index'
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
@@ -156,8 +157,11 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters(['currentRole'])
+  },
   created() {
-    this.getUserList(1)
+    this.getUserList(this.currentRole.orgId)
   },
   methods: {
     getUserList(orgId) {
@@ -183,7 +187,7 @@ export default {
           _editUser(this.editUserModel)
             .then(response => {
               if (response.data.resultCode === '1') {
-                this.getUserList(1)
+                this.getUserList(this.currentOrg.id)
                 showMsg(this, 'success', '修改成功')
               } else {
                 showMsg(this, 'error', '修改失败')
@@ -208,7 +212,7 @@ export default {
               } else {
                 showMsg(this, 'error', '删除失败')
               }
-              this.getUserList(1)
+              this.getUserList(this.currentOrg.id)
             })
             .catch(error => {
               console.log(error)
@@ -225,7 +229,7 @@ export default {
             .then(response => {
               if (response.data.resultCode === '1') {
                 showMsg(this, 'success', '添加成功')
-                this.getUserList(1)
+                this.getUserList(this.currentOrg.id)
               } else {
                 showMsg(this, 'error', '添加失败')
               }
@@ -253,15 +257,21 @@ export default {
     },
     changePageNum(pageNum) {
       this.currentPage = pageNum
-      this.getUserList(1)
+      this.getUserList(this.currentOrg.id)
     },
     chanagePageSize(pageSize) {
       this.pageSize = pageSize
-      this.getUserList(1)
+      this.getUserList(this.currentOrg.id)
     },
     batchDeleteUsers() {
-      _deleteUserList(1, this.batchDeleteUserList)
-      this.getUserList(1)
+      showConfirmMsg(this, '此操作将永久删除该用户, 是否继续?')
+        .then(() => {
+          _deleteUserList(this.batchDeleteUserList)
+          this.getUserList(this.currentOrg.id)
+        })
+        .catch(error => {
+          console.log(error)
+        })
     },
     search() {
       const key = this.searchSelectModel

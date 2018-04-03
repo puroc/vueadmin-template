@@ -46,3 +46,13 @@ export function _addUser(user) {
     }
   })
 }
+
+export function _deleteUserList(userList) {
+  return request({
+    url: '/api/idm/user',
+    method: 'delete',
+    data: {
+      payloads: userList
+    }
+  })
+}
