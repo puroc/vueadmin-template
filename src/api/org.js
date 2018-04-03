@@ -15,6 +15,13 @@ export function _getOrgTree(orgId) {
   })
 }
 
+export function _getOrgInfo(orgId) {
+  return request({
+    url: '/api/idm/org/' + orgId,
+    method: 'get'
+  })
+}
+
 export function _addOrg(upperOrgId, payloads) {
   return request({
     url: '/api/idm/org/' + upperOrgId,

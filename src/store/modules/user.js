@@ -1,5 +1,6 @@
-import { _login, _logout, _getInfo, _refreshToken } from '@/api/login';
-import { getToken, setToken, removeToken } from '@/utils/auth';
+import { _login, _logout, _getInfo, _refreshToken } from '@/api/login'
+import { getToken, setToken, removeToken } from '@/utils/auth'
+import { _getOrgInfo } from '@/api/org'
 
 const user = {
   state: {
@@ -104,7 +105,7 @@ const user = {
     },
 
     // 获取用户信息
-    GetInfo({ commit }, token) {
+    GetInfo({ dispatch, commit }, token) {
       return new Promise((resolve, reject) => {
         _getInfo()
           .then(response => {
@@ -115,15 +116,27 @@ const user = {
             if (user.roles.length !== 0) {
               commit('SET_CURRENT_ROLE', user.roles[0])
             }
+            dispatch('SwitchOrg', user.roles[0].orgId)
             resolve()
           })
           .catch(error => {
+            console.log(error)
             reject(error)
           })
       })
     },
-    SwitchOrg({ commit }, org) {
-      commit('SET_CURRENT_ORG', org)
+    SwitchOrg({ commit }, orgId) {
+      return new Promise((resolve, reject) => {
+        _getOrgInfo(orgId)
+          .then(response => {
+            commit('SET_CURRENT_ORG', response.data.payloads[0])
+            resolve()
+          })
+          .catch(error => {
+            console.log(error)
+            reject(error)
+          })
+      })
     }
   }
 }

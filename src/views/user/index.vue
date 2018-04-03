@@ -131,9 +131,11 @@ import { _getUserListByOrgId } from '@/api/org'
 import { _deleteUser, _editUser, _addUser, _deleteUserList } from '@/api/user'
 import { deepCopy, showMsg, showConfirmMsg, resetForm } from '@/utils/index'
 import { mapGetters } from 'vuex'
+import Store from '@/store'
 export default {
   data() {
     return {
+      storeState: Store.state,
       users: [],
       multipleSelection: [],
       currentPage: 1,
@@ -158,10 +160,22 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['currentRole'])
+    ...mapGetters(['currentOrg'])
   },
   created() {
-    this.getUserList(this.currentRole.orgId)
+    this.getUserList(this.currentOrg.id)
+  },
+  watch: {
+    'storeState.currentOrg': {
+      handler: (val, oldVal) => {
+        // 要执行的任务
+        // 这里不知道怎么才能修改到this.data的数据，有知道的麻烦告知
+        // 现在知道的就是通过直接修改Store.state的方式来更新数据，当然效果和修改this.data是一样的
+        alert('change')
+      },
+      // 深度观察
+      deep: true
+    }
   },
   methods: {
     getUserList(orgId) {

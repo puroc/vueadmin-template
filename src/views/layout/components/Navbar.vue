@@ -2,7 +2,7 @@
   <el-menu class="navbar" mode="horizontal">
     <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
     <!-- <breadcrumb></breadcrumb> -->
-    <el-button type="text" style="font-size:18px">{{currentOrg.label}}</el-button>
+    <el-button type="text" style="font-size:18px">{{currentOrg.name}}</el-button>
     <el-dropdown class="avatar-container" trigger="click">
       <el-button>{{username}}</el-button>
       <el-dropdown-menu class="user-dropdown" slot="dropdown">

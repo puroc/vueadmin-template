@@ -69,7 +69,7 @@ export default {
       _getOrgTree(orgId)
         .then(response => {
           this.orgTree = response.data.payloads
-          this.$store.dispatch('SwitchOrg', this.orgTree[0])
+          // this.$store.dispatch('SwitchOrg', this.orgTree[0])
         })
         .catch(error => {
           console.log(error)
@@ -78,7 +78,7 @@ export default {
     // 处理机构数节点点击事件
     handleNodeClick(data) {
       this.selectedOrg = data
-      this.$store.dispatch('SwitchOrg', this.selectedOrg)
+      this.$store.dispatch('SwitchOrg', this.selectedOrg.id)
     },
     // 添加机构
     addOrg() {
@@ -138,10 +138,6 @@ export default {
       this.addOrgDialogFormVisible = true
       // 将选中的机构设置为上级机构，即在该机构下面添加机构
       this.addOrgModel.upperOrg = this.selectedOrg
-    },
-    handleRightNodeClick(data) {
-      console.log(data)
-      alert('lala')
     }
   }
 }
