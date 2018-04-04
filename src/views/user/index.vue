@@ -163,6 +163,7 @@ export default {
     ...mapGetters(['currentOrg'])
   },
   created() {
+    console.log(this.currentOrg.id)
     this.getUserList()
   },
   watch: {

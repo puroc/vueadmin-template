@@ -61,15 +61,14 @@ export default {
   },
   created() {
     // 获取角色绑定的机构树
-    this.getOrgTree(this.currentRole.orgId)
+    this.getOrgTree()
   },
   methods: {
     // 获取机构树
-    getOrgTree(orgId) {
-      _getOrgTree(orgId)
+    getOrgTree() {
+      _getOrgTree(this.currentRole.org.id)
         .then(response => {
           this.orgTree = response.data.payloads
-          // this.$store.dispatch('SwitchOrg', this.orgTree[0])
         })
         .catch(error => {
           console.log(error)
@@ -91,7 +90,7 @@ export default {
         .then(() => {
           // 添加成功，将选中的机构清空，同时获取最新的机构树
           this.selectedOrg = {}
-          this.getOrgTree(this.currentRole.orgId)
+          this.getOrgTree()
         })
         .catch(error => {
           console.log(error)
@@ -115,7 +114,7 @@ export default {
                   duration: 5 * 1000
                 })
               } else {
-                this.getOrgTree(this.currentRole.orgId)
+                this.getOrgTree()
               }
               this.selectedOrg = {}
             })

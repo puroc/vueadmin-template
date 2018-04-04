@@ -116,7 +116,7 @@ const user = {
             if (user.roles.length !== 0) {
               commit('SET_CURRENT_ROLE', user.roles[0])
             }
-            dispatch('SwitchOrg', user.roles[0].orgId)
+            commit('SET_CURRENT_ORG', user.roles[0].org)
             resolve()
           })
           .catch(error => {

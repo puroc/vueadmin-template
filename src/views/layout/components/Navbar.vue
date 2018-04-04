@@ -54,9 +54,6 @@ export default {
     },
     switchRole(role) {
       this.$store.dispatch('SwitchRole', role)
-    },
-    switchOrg() {
-      alert('xixi')
     }
   }
 }
