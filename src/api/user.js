@@ -15,8 +15,6 @@ export function _editUser(user) {
       payloads: [
         {
           name: user.name,
-          sex: user.sex,
-          birthday: user.birthday,
           phone: user.phone,
           email: user.email,
           orgId: user.orgId
@@ -36,8 +34,6 @@ export function _addUser(user) {
           username: user.username,
           name: user.name,
           password: user.password,
-          sex: user.sex,
-          birthday: user.birthday,
           phone: user.phone,
           email: user.email,
           orgId: user.orgId

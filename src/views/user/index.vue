@@ -30,8 +30,6 @@
       </el-table-column>
       <el-table-column prop="username" label="用户名">
       </el-table-column>
-      <el-table-column prop="sex" label="性别">
-      </el-table-column>
       <el-table-column prop="phone" label="手机">
       </el-table-column>
       <el-table-column prop="email" label="邮箱">
@@ -67,12 +65,6 @@
           <el-form-item label="机构" :label-width="formLabelWidth">
             <el-input v-model="editUserModel.orgId" auto-complete="off" :disabled="editable"></el-input>
           </el-form-item>
-          <el-form-item label="性别" :label-width="formLabelWidth">
-            <el-input v-model="editUserModel.sex" auto-complete="off" :disabled="editable"></el-input>
-          </el-form-item>
-          <el-form-item label="生日" :label-width="formLabelWidth">
-            <el-input v-model="editUserModel.birthday" auto-complete="off" :disabled="editable"></el-input>
-          </el-form-item>
           <el-form-item label="手机" :label-width="formLabelWidth">
             <el-input v-model="editUserModel.phone" auto-complete="off" :disabled="editable"></el-input>
           </el-form-item>
@@ -104,12 +96,6 @@
           <el-form-item label="机构" :label-width="formLabelWidth" prop='orgId'>
             <el-input v-model="addUserModel.orgId" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="性别" :label-width="formLabelWidth" prop='sex'>
-            <el-input v-model="addUserModel.sex" auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="生日" :label-width="formLabelWidth" prop='birthday'>
-            <el-input v-model="addUserModel.birthday" auto-complete="off"></el-input>
-          </el-form-item>
           <el-form-item label="手机" :label-width="formLabelWidth" prop='phone'>
             <el-input v-model="addUserModel.phone" auto-complete="off"></el-input>
           </el-form-item>
@@ -134,6 +120,54 @@ import { mapGetters } from 'vuex'
 import Store from '@/store'
 export default {
   data() {
+    const validateUsername = (rule, value, callback) => {
+      if (new RegExp('^\\w+$').test(value)) {
+        callback()
+      } else {
+        callback(new Error('用户名只能包含字母数字和下划线'))
+      }
+    }
+
+    const validatePassword = (rule, value, callback) => {
+      if (new RegExp('^\\w+$').test(value)) {
+        callback()
+      } else {
+        callback(new Error('密码只能包含字母数字和下划线'))
+      }
+    }
+
+    const validateName = (rule, value, callback) => {
+      if (new RegExp('^[\u4e00-\u9fa5]*$').test(value)) {
+        callback()
+      } else {
+        callback(new Error('姓名只能包含中文'))
+      }
+    }
+
+    const validatePhone = (rule, value, callback) => {
+      if (
+        new RegExp(
+          '^((13[0-9])|(14[0-9])|(15[0-9])|(17[0-9])|(18[0-9]))\\d{8}$'
+        ).test(value)
+      ) {
+        callback()
+      } else {
+        callback(new Error('请输入正确的手机号'))
+      }
+    }
+
+    const validateEmail = (rule, value, callback) => {
+      if (
+        new RegExp(
+          '^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+$'
+        ).test(value)
+      ) {
+        callback()
+      } else {
+        callback(new Error('请输入正确的邮箱'))
+      }
+    }
+
     return {
       storeState: Store.state,
       users: [],
@@ -152,9 +186,47 @@ export default {
       editable: true,
       batchDeleteUserList: [],
       validateUserRules: {
+        username: [
+          {
+            required: true,
+            trigger: 'blur',
+            validator: validateUsername
+          }
+        ],
+        password: [
+          {
+            required: true,
+            trigger: 'blur',
+            validator: validatePassword
+          },
+          { min: 3, max: 6, message: '密码长度在 3 到 6 个字符', trigger: 'blur' }
+        ],
         name: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
-          { min: 3, max: 50, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          {
+            required: true,
+            trigger: 'blur',
+            validator: validateName
+          }
+        ],
+        orgId: [
+          {
+            required: true,
+            trigger: 'blur'
+          }
+        ],
+        phone: [
+          {
+            required: true,
+            trigger: 'blur',
+            validator: validatePhone
+          }
+        ],
+        email: [
+          {
+            required: true,
+            trigger: 'blur',
+            validator: validateEmail
+          }
         ]
       }
     }
@@ -163,7 +235,6 @@ export default {
     ...mapGetters(['currentOrg'])
   },
   created() {
-    console.log(this.currentOrg.id)
     this.getUserList()
   },
   watch: {
