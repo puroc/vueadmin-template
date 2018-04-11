@@ -70,8 +70,11 @@ export function formatTime(time, option) {
   }
 }
 
-export function deepCopy(p) {
-  const c = {}
+export function deepCopy(p, c) {
+  if (!c) {
+    c = {}
+  }
+  // const c = {}
   for (const i in p) {
     if (typeof p[i] === 'object') {
       c[i] = p[i].constructor === Array ? [] : {}

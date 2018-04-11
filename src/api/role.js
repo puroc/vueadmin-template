@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import store from '@/store'
 
 export function _deleteRole(role) {
   return request({
@@ -14,7 +15,8 @@ export function _editRole(role) {
     data: {
       payloads: [
         {
-          name: role.name
+          name: role.name,
+          orgId: store.getters.currentOrg.id
         }
       ]
     }
@@ -29,7 +31,7 @@ export function _addRole(role) {
       payloads: [
         {
           name: role.name,
-          orgId: role.orgId
+          orgId: store.getters.currentOrg.id
         }
       ]
     }

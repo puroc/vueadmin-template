@@ -39,22 +39,28 @@
     </div>
     <!-- details dialog -->
     <el-dialog title="角色详情" :visible.sync="editDialogFormVisible" top="5vh">
-      <el-tabs value="role" type="card" tab-position="top" @tab-click="handleTabClick">
-        <el-tab-pane label="角色" name="role">
-          <div>
-            <el-button type="primary" icon="el-icon-edit" plain @click="switchToEdit" style="float:right;margin-right:5%"></el-button>
-          </div>
-          <br/>
-          <div style="margin:5%;">
-            <el-form :model="editRoleModel" :rules="validateRoleRules" ref="editRoleForm">
+      <el-form :model="editRoleModel" :rules="validateRoleRules" ref="editRoleForm">
+        <el-tabs value="role" type="card" tab-position="top">
+          <el-tab-pane label="角色" name="role">
+            <div>
+              <el-button type="primary" icon="el-icon-edit" plain @click="switchToEdit" style="float:right;margin-right:5%"></el-button>
+            </div>
+            <br/>
+            <div style="margin:5%;">
               <el-form-item label="角色名" :label-width="formLabelWidth">
                 <el-input v-model="editRoleModel.name" auto-complete="off" :disabled="editable"></el-input>
               </el-form-item>
-            </el-form>
-          </div>
-        </el-tab-pane>
-        <el-tab-pane label="权限" name="permission">权限</el-tab-pane>
-      </el-tabs>
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="权限" name="permission">
+            <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
+            <div style="margin: 15px 0;"></div>
+            <el-checkbox-group v-model="bindedPermissions" @change="handlecheckedPermissionsChange">
+              <el-checkbox v-for="permission in permissions" :label="permission.id" :key="permission.id">{{permission.name}}</el-checkbox>
+            </el-checkbox-group>
+          </el-tab-pane>
+        </el-tabs>
+      </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="editDialogFormVisible=false">取 消</el-button>
         <el-button type="primary" @click="editRole">确 定</el-button>
@@ -69,9 +75,6 @@
           <el-form-item label="角色名" :label-width="formLabelWidth" prop='name'>
             <el-input v-model="addRoleModel.name" auto-complete="off"></el-input>
           </el-form-item>
-          <!-- <el-form-item label="机构" :label-width="formLabelWidth" prop='orgId'>
-            <el-input v-model="addRoleModel.orgId" auto-complete="off"></el-input>
-          </el-form-item> -->
         </el-form>
       </div>
       <div slot="footer" class="dialog-footer">
@@ -84,63 +87,25 @@
 </template>
 <script>
 import { _getRoleListByOrgId } from '@/api/org';
+import { _getPermissions } from '@/api/permission';
 import { _deleteRole, _editRole, _addRole, _deleteRoleList } from '@/api/role';
 import { deepCopy, showMsg, showConfirmMsg, resetForm } from '@/utils/index';
 import { mapGetters } from 'vuex';
 import Store from '@/store';
 export default {
   data() {
-    const validateUsername = (rule, value, callback) => {
-      if (new RegExp('^\\w+$').test(value)) {
-        callback()
-      } else {
-        callback(new Error('角色名只能包含字母数字和下划线'))
-      }
-    }
-
-    const validatePassword = (rule, value, callback) => {
-      if (new RegExp('^\\w+$').test(value)) {
-        callback()
-      } else {
-        callback(new Error('密码只能包含字母数字和下划线'))
-      }
-    }
-
     const validateName = (rule, value, callback) => {
       if (new RegExp('^[\u4e00-\u9fa5]*$').test(value)) {
         callback()
       } else {
-        callback(new Error('姓名只能包含中文'))
-      }
-    }
-
-    const validatePhone = (rule, value, callback) => {
-      if (
-        new RegExp(
-          '^((13[0-9])|(14[0-9])|(15[0-9])|(17[0-9])|(18[0-9]))\\d{8}$'
-        ).test(value)
-      ) {
-        callback()
-      } else {
-        callback(new Error('请输入正确的手机号'))
-      }
-    }
-
-    const validateEmail = (rule, value, callback) => {
-      if (
-        new RegExp('^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+$').test(
-          value
-        )
-      ) {
-        callback()
-      } else {
-        callback(new Error('请输入正确的邮箱'))
+        callback(new Error('角色名只能包含中文'))
       }
     }
 
     return {
       storeState: Store.state,
       roles: [],
+      permissions: [],
       multipleSelection: [],
       currentPage: 1,
       pageSizeList: [10, 30, 50],
@@ -155,52 +120,15 @@ export default {
       formLabelWidth: '70px',
       editable: true,
       batchDeleteRoleList: [],
+      bindedPermissions: [],
+      checkAll: false,
+      isIndeterminate: true,
       validateRoleRules: {
-        username: [
-          {
-            required: true,
-            trigger: 'blur',
-            validator: validateUsername
-          }
-        ],
-        password: [
-          {
-            required: true,
-            trigger: 'blur',
-            validator: validatePassword
-          },
-          {
-            min: 3,
-            max: 6,
-            message: '密码长度在 3 到 6 个字符',
-            trigger: 'blur'
-          }
-        ],
         name: [
           {
             required: true,
             trigger: 'blur',
             validator: validateName
-          }
-        ],
-        orgId: [
-          {
-            required: true,
-            trigger: 'blur'
-          }
-        ],
-        phone: [
-          {
-            required: true,
-            trigger: 'blur',
-            validator: validatePhone
-          }
-        ],
-        email: [
-          {
-            required: true,
-            trigger: 'blur',
-            validator: validateEmail
           }
         ]
       }
@@ -211,6 +139,7 @@ export default {
   },
   created() {
     this.getRoleList()
+    this.getPermissions()
   },
   watch: {
     // 观察currentOrg是否变化，若变化，则根据最新的currentOrg获取角色
@@ -219,6 +148,15 @@ export default {
     }
   },
   methods: {
+    getPermissions() {
+      _getPermissions()
+        .then(response => {
+          this.permissions = response.data.payloads
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
     getRoleList() {
       const params = {
         current: this.currentPage === 1 ? 0 : this.currentPage * this.pageSize,
@@ -280,7 +218,6 @@ export default {
     addRole() {
       this.$refs.addRoleForm.validate(valid => {
         if (valid) {
-          this.addRoleModel.orgId = this.currentOrg.id
           _addRole(this.addRoleModel)
             .then(response => {
               if (response.data.resultCode === '1') {
@@ -306,7 +243,17 @@ export default {
     openEditRoleDialog(row) {
       this.editDialogFormVisible = true
       this.editRoleModel = deepCopy(row)
+      this.bindedPermissions = this.getIdListFromPermissions(
+        this.editRoleModel.permissions
+      )
       this.editable = true
+    },
+    getIdListFromPermissions(array) {
+      const targetArray = []
+      array.forEach(element => {
+        targetArray.push(element.id)
+      })
+      return targetArray
     },
     handleSelectionChange(roleList) {
       this.batchDeleteRoleList = roleList
@@ -329,21 +276,12 @@ export default {
           console.log(error)
         })
     },
-    handleTabClick(tab, event) {
-      console.log(tab, event)
-    },
     search() {
       const key = this.searchSelectModel
       const value = this.searchInputModel
       const _this = this
       if (key === 'name') {
         doSearch(1, { name: value })
-      } else if (key === 'username') {
-        doSearch(1, { username: value })
-      } else if (key === 'email') {
-        doSearch(1, { email: value })
-      } else if (key === 'phone') {
-        doSearch(1, { phone: value })
       } else {
         console.log('选择了错误的搜索类型')
       }
@@ -363,6 +301,18 @@ export default {
             console.log(error)
           })
       }
+    },
+    handlecheckedPermissionsChange(value) {
+      const checkedCount = value.length
+      this.checkAll = checkedCount === this.permissions.length
+      this.isIndeterminate =
+        checkedCount > 0 && checkedCount < this.permissions.length
+    },
+    handleCheckAllChange(val) {
+      this.bindedPermissions = val
+        ? this.getIdListFromPermissions(this.permissions)
+        : []
+      this.isIndeterminate = false
     }
   }
 }
