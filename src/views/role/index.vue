@@ -179,7 +179,12 @@ export default {
     editRole() {
       this.$refs.editRoleForm.validate(valid => {
         if (valid) {
-          this.bindedPermissions
+          this.editRoleModel.permissions = []
+          this.bindedPermissions.forEach(element => {
+            const permissionObj = {}
+            permissionObj.id = element
+            this.editRoleModel.permissions.push(permissionObj)
+          })
           _editRole(this.editRoleModel)
             .then(response => {
               if (response.data.resultCode === '1') {

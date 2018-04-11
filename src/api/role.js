@@ -15,6 +15,7 @@ export function _editRole(role) {
     data: {
       payloads: [
         {
+          id: role.id,
           name: role.name,
           orgId: store.getters.currentOrg.id,
           permissions: role.permissions
