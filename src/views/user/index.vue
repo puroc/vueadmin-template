@@ -58,9 +58,9 @@
           <el-form-item label="姓名" :label-width="formLabelWidth">
             <el-input v-model="editUserModel.name" auto-complete="off" :disabled="editable"></el-input>
           </el-form-item>
-          <el-form-item label="机构" :label-width="formLabelWidth">
+          <!-- <el-form-item label="机构" :label-width="formLabelWidth">
             <el-input v-model="editUserModel.orgId" auto-complete="off" :disabled="editable"></el-input>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="手机" :label-width="formLabelWidth">
             <el-input v-model="editUserModel.phone" auto-complete="off" :disabled="editable"></el-input>
           </el-form-item>
@@ -89,9 +89,9 @@
           <el-form-item label="姓名" :label-width="formLabelWidth" prop='name'>
             <el-input v-model="addUserModel.name" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="机构" :label-width="formLabelWidth" prop='orgId'>
+          <!-- <el-form-item label="机构" :label-width="formLabelWidth" prop='orgId'>
             <el-input v-model="addUserModel.orgId" auto-complete="off"></el-input>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="手机" :label-width="formLabelWidth" prop='phone'>
             <el-input v-model="addUserModel.phone" auto-complete="off"></el-input>
           </el-form-item>
@@ -249,7 +249,6 @@ export default {
         .then(response => {
           this.users = response.data.payloads
           this.totalRecord = response.data.totalNum
-          console.log('aaa')
         })
         .catch(error => {
           console.log(error)
@@ -302,6 +301,7 @@ export default {
     addUser() {
       this.$refs.addUserForm.validate(valid => {
         if (valid) {
+          this.addUserModel.orgId = this.currentOrg.id
           _addUser(this.addUserModel)
             .then(response => {
               if (response.data.resultCode === '1') {

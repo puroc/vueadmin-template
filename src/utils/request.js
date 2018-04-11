@@ -27,7 +27,8 @@ service.interceptors.response.use(data => {
 },
 error => {
   console.log('err' + error)// for debug
-  const alert = error.response.data.message ? error.response.data.message : error.message
+  // const alert = error.response.data.message ? error.response.data.message : error.message
+  const alert = '操作失败'
   Message({
     message: alert,
     type: 'error',

@@ -8,6 +8,14 @@ export function _getUserListByOrgId(orgId, params) {
   })
 }
 
+export function _getRoleListByOrgId(orgId, params) {
+  return request({
+    url: '/api/idm/org/' + orgId + '/roles',
+    method: 'get',
+    params
+  })
+}
+
 export function _getOrgTree(orgId) {
   return request({
     url: '/api/idm/org/' + orgId + '/tree',
