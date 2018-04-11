@@ -38,7 +38,7 @@
       </div>
     </div>
     <!-- details dialog -->
-    <el-dialog title="角色详情" :visible.sync="editDialogFormVisible" top="5vh">
+    <el-dialog title="角色详情" :visible.sync="editDialogFormVisible" top="5vh" @close="handleDialogClose">
       <div>
         <el-button type="primary" icon="el-icon-edit" plain @click="switchToEdit" style="float:right;margin-right:5%"></el-button>
       </div>
@@ -68,7 +68,7 @@
     </el-dialog>
 
     <!-- add dialog -->
-    <el-dialog title="添加角色" :visible.sync="addDialogFormVisible" top="5vh" close-on-click-modal="false" close-on-press-escape="false">
+    <el-dialog title="添加角色" :visible.sync="addDialogFormVisible" top="5vh" @close="handleDialogClose">
       <br/>
       <div>
         <el-form :model="addRoleModel" :rules="validateRoleRules" ref="addRoleForm">
@@ -187,15 +187,18 @@ export default {
     switchToEdit() {
       this.editable = !this.editable
     },
+    addPermissionToRoleModel(permissions, model) {
+      model.permissions = []
+      permissions.forEach(element => {
+        const permissionObj = {}
+        permissionObj.id = element
+        model.permissions.push(permissionObj)
+      })
+    },
     editRole() {
       this.$refs.editRoleForm.validate(valid => {
         if (valid) {
-          this.editRoleModel.permissions = []
-          this.bindedPermissions.forEach(element => {
-            const permissionObj = {}
-            permissionObj.id = element
-            this.editRoleModel.permissions.push(permissionObj)
-          })
+          this.addPermissionToRoleModel(this.bindedPermissions, this.editRoleModel)
           _editRole(this.editRoleModel)
             .then(response => {
               if (response.data.resultCode === '1') {
@@ -237,6 +240,7 @@ export default {
     addRole() {
       this.$refs.addRoleForm.validate(valid => {
         if (valid) {
+          this.addPermissionToRoleModel(this.bindedPermissions, this.addRoleModel)
           _addRole(this.addRoleModel)
             .then(response => {
               if (response.data.resultCode === '1') {
@@ -288,8 +292,11 @@ export default {
     batchDeleteRoles() {
       showConfirmMsg(this, '此操作将永久删除该角色, 是否继续?')
         .then(() => {
-          _deleteRoleList(this.batchDeleteRoleList)
-          this.getRoleList()
+          _deleteRoleList(this.batchDeleteRoleList).then(() => {
+            this.getRoleList()
+          }).catch(error => {
+            console.log(error)
+          })
         })
         .catch(error => {
           console.log(error)
@@ -333,6 +340,9 @@ export default {
         ? this.getIdListFromPermissions(this.permissions)
         : []
       this.isIndeterminate = false
+    },
+    handleDialogClose() {
+      this.bindedPermissions = []
     }
   }
 }
