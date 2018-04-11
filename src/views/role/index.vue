@@ -88,12 +88,12 @@
   </div>
 </template>
 <script>
-import { _getRoleListByOrgId } from '@/api/org';
-import { _getPermissions } from '@/api/permission';
-import { _deleteRole, _editRole, _addRole, _deleteRoleList } from '@/api/role';
-import { deepCopy, showMsg, showConfirmMsg, resetForm } from '@/utils/index';
-import { mapGetters } from 'vuex';
-import Store from '@/store';
+import { _getRoleListByOrgId } from '@/api/org'
+import { _getPermissions } from '@/api/permission'
+import { _deleteRole, _editRole, _addRole, _deleteRoleList } from '@/api/role'
+import { deepCopy, showMsg, showConfirmMsg, resetForm } from '@/utils/index'
+import { mapGetters } from 'vuex'
+import Store from '@/store'
 export default {
   data() {
     const validateName = (rule, value, callback) => {
@@ -179,6 +179,7 @@ export default {
     editRole() {
       this.$refs.editRoleForm.validate(valid => {
         if (valid) {
+          this.bindedPermissions
           _editRole(this.editRoleModel)
             .then(response => {
               if (response.data.resultCode === '1') {

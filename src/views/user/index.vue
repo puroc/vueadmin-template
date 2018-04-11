@@ -58,9 +58,6 @@
           <el-form-item label="姓名" :label-width="formLabelWidth">
             <el-input v-model="editUserModel.name" auto-complete="off" :disabled="editable"></el-input>
           </el-form-item>
-          <!-- <el-form-item label="机构" :label-width="formLabelWidth">
-            <el-input v-model="editUserModel.orgId" auto-complete="off" :disabled="editable"></el-input>
-          </el-form-item> -->
           <el-form-item label="手机" :label-width="formLabelWidth">
             <el-input v-model="editUserModel.phone" auto-complete="off" :disabled="editable"></el-input>
           </el-form-item>
@@ -89,9 +86,6 @@
           <el-form-item label="姓名" :label-width="formLabelWidth" prop='name'>
             <el-input v-model="addUserModel.name" auto-complete="off"></el-input>
           </el-form-item>
-          <!-- <el-form-item label="机构" :label-width="formLabelWidth" prop='orgId'>
-            <el-input v-model="addUserModel.orgId" auto-complete="off"></el-input>
-          </el-form-item> -->
           <el-form-item label="手机" :label-width="formLabelWidth" prop='phone'>
             <el-input v-model="addUserModel.phone" auto-complete="off"></el-input>
           </el-form-item>
