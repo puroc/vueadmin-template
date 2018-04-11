@@ -39,28 +39,30 @@
     </div>
     <!-- details dialog -->
     <el-dialog title="角色详情" :visible.sync="editDialogFormVisible" top="5vh">
-      <el-form :model="editRoleModel" :rules="validateRoleRules" ref="editRoleForm">
-        <el-tabs value="role" type="card" tab-position="top">
-          <el-tab-pane label="角色" name="role">
-            <div>
-              <el-button type="primary" icon="el-icon-edit" plain @click="switchToEdit" style="float:right;margin-right:5%"></el-button>
-            </div>
-            <br/>
-            <div style="margin:5%;">
-              <el-form-item label="角色名" :label-width="formLabelWidth">
-                <el-input v-model="editRoleModel.name" auto-complete="off" :disabled="editable"></el-input>
-              </el-form-item>
-            </div>
-          </el-tab-pane>
-          <el-tab-pane label="权限" name="permission">
-            <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
-            <div style="margin: 15px 0;"></div>
-            <el-checkbox-group v-model="bindedPermissions" @change="handlecheckedPermissionsChange">
-              <el-checkbox v-for="permission in permissions" :label="permission.id" :key="permission.id">{{permission.name}}</el-checkbox>
-            </el-checkbox-group>
-          </el-tab-pane>
-        </el-tabs>
-      </el-form>
+      <div>
+        <el-button type="primary" icon="el-icon-edit" plain @click="switchToEdit" style="float:right;margin-right:5%"></el-button>
+      </div>
+      <br/>
+      <div>
+        <el-form :model="editRoleModel" :rules="validateRoleRules" ref="editRoleForm">
+          <el-tabs value="role" type="card" tab-position="top">
+            <el-tab-pane label="角色" name="role">
+              <div style="margin:5%;">
+                <el-form-item label="角色名" :label-width="formLabelWidth">
+                  <el-input v-model="editRoleModel.name" auto-complete="off" :disabled="editable"></el-input>
+                </el-form-item>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="权限" name="permission">
+              <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange" :disabled="editable">全选</el-checkbox>
+              <div style="margin: 15px 0;"></div>
+              <el-checkbox-group v-model="bindedPermissions" @change="handlecheckedPermissionsChange" :disabled="editable">
+                <el-checkbox v-for="permission in permissions" :label="permission.id" :key="permission.id">{{permission.name}}</el-checkbox>
+              </el-checkbox-group>
+            </el-tab-pane>
+          </el-tabs>
+        </el-form>
+      </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="editDialogFormVisible=false">取 消</el-button>
         <el-button type="primary" @click="editRole">确 定</el-button>
@@ -307,6 +309,7 @@ export default {
       this.checkAll = checkedCount === this.permissions.length
       this.isIndeterminate =
         checkedCount > 0 && checkedCount < this.permissions.length
+      this.bindedPermissions = value
     },
     handleCheckAllChange(val) {
       this.bindedPermissions = val

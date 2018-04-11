@@ -16,7 +16,8 @@ export function _editRole(role) {
       payloads: [
         {
           name: role.name,
-          orgId: store.getters.currentOrg.id
+          orgId: store.getters.currentOrg.id,
+          permissions: role.permissions
         }
       ]
     }
@@ -47,3 +48,4 @@ export function _deleteRoleList(roleList) {
     }
   })
 }
+
