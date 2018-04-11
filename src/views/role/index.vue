@@ -22,8 +22,8 @@
     </div>
     <el-table ref="multipleTable" border stripe highlight-current-row :data="roles" tooltip-effect="dark" style="width: 100%" max-height="600" @selection-change="handleSelectionChange">
       <el-table-column type="selection" disabled/>
-      <el-table-column prop="name" label="角色名"/>
-      <el-table-column prop="org.name" label="所属机构"/>
+      <el-table-column prop="name" label="角色名" />
+      <el-table-column prop="org.name" label="所属机构" />
       <el-table-column fixed="right" label="操作" width="100">
         <template slot-scope="scope">
           <el-button @click="openEditRoleDialog(scope.row)" type="text" size="small">查看</el-button>
@@ -39,18 +39,22 @@
     </div>
     <!-- details dialog -->
     <el-dialog title="角色详情" :visible.sync="editDialogFormVisible" top="5vh">
-      <div>
-        <el-button type="primary" icon="el-icon-edit" plain @click="switchToEdit" style="float:right;margin-right:5%"></el-button>
-      </div>
-      <br/>
-      <!-- <div style="margin:5%; height:600px; overflow:auto"> -->
-      <div style="margin:5%;">
-        <el-form :model="editRoleModel" :rules="validateRoleRules" ref="editRoleForm">
-          <el-form-item label="角色名" :label-width="formLabelWidth">
-            <el-input v-model="editRoleModel.name" auto-complete="off" :disabled="editable"></el-input>
-          </el-form-item>
-        </el-form>
-      </div>
+      <el-tabs value="role" type="card" tab-position="top" @tab-click="handleTabClick">
+        <el-tab-pane label="角色" name="role">
+          <div>
+            <el-button type="primary" icon="el-icon-edit" plain @click="switchToEdit" style="float:right;margin-right:5%"></el-button>
+          </div>
+          <br/>
+          <div style="margin:5%;">
+            <el-form :model="editRoleModel" :rules="validateRoleRules" ref="editRoleForm">
+              <el-form-item label="角色名" :label-width="formLabelWidth">
+                <el-input v-model="editRoleModel.name" auto-complete="off" :disabled="editable"></el-input>
+              </el-form-item>
+            </el-form>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="权限" name="permission">权限</el-tab-pane>
+      </el-tabs>
       <div slot="footer" class="dialog-footer">
         <el-button @click="editDialogFormVisible=false">取 消</el-button>
         <el-button type="primary" @click="editRole">确 定</el-button>
@@ -79,11 +83,11 @@
   </div>
 </template>
 <script>
-import { _getRoleListByOrgId } from '@/api/org'
-import { _deleteRole, _editRole, _addRole, _deleteRoleList } from '@/api/role'
-import { deepCopy, showMsg, showConfirmMsg, resetForm } from '@/utils/index'
-import { mapGetters } from 'vuex'
-import Store from '@/store'
+import { _getRoleListByOrgId } from '@/api/org';
+import { _deleteRole, _editRole, _addRole, _deleteRoleList } from '@/api/role';
+import { deepCopy, showMsg, showConfirmMsg, resetForm } from '@/utils/index';
+import { mapGetters } from 'vuex';
+import Store from '@/store';
 export default {
   data() {
     const validateUsername = (rule, value, callback) => {
@@ -124,9 +128,9 @@ export default {
 
     const validateEmail = (rule, value, callback) => {
       if (
-        new RegExp(
-          '^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+$'
-        ).test(value)
+        new RegExp('^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+$').test(
+          value
+        )
       ) {
         callback()
       } else {
@@ -165,7 +169,12 @@ export default {
             trigger: 'blur',
             validator: validatePassword
           },
-          { min: 3, max: 6, message: '密码长度在 3 到 6 个字符', trigger: 'blur' }
+          {
+            min: 3,
+            max: 6,
+            message: '密码长度在 3 到 6 个字符',
+            trigger: 'blur'
+          }
         ],
         name: [
           {
@@ -319,6 +328,9 @@ export default {
         .catch(error => {
           console.log(error)
         })
+    },
+    handleTabClick(tab, event) {
+      console.log(tab, event)
     },
     search() {
       const key = this.searchSelectModel
