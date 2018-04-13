@@ -307,18 +307,18 @@ export default {
       const value = this.searchInputModel
       const _this = this
       if (key === 'name') {
-        doSearch(1, { name: value })
+        doSearch({ name: value })
       } else {
         console.log('选择了错误的搜索类型')
       }
-      function doSearch(orgId, condition) {
+      function doSearch(condition) {
         const page = {
           current:
             _this.currentPage === 1 ? 0 : _this.currentPage * _this.pageSize,
           size: _this.pageSize
         }
         const params = Object.assign(page, condition)
-        _getRoleListByOrgId(orgId, params)
+        _getRoleListByOrgId(_this.currentOrg.id, params)
           .then(response => {
             _this.roles = response.data.payloads
             _this.totalRecord = response.data.totalNum

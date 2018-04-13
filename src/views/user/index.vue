@@ -103,11 +103,11 @@
   </div>
 </template>
 <script>
-import { _getUserListByOrgId } from '@/api/org';
-import { _deleteUser, _editUser, _addUser, _deleteUserList } from '@/api/user';
-import { deepCopy, showMsg, showConfirmMsg, resetForm } from '@/utils/index';
-import { mapGetters } from 'vuex';
-import Store from '@/store';
+import { _getUserListByOrgId } from '@/api/org'
+import { _deleteUser, _editUser, _addUser, _deleteUserList } from '@/api/user'
+import { deepCopy, showMsg, showConfirmMsg, resetForm } from '@/utils/index'
+import { mapGetters } from 'vuex'
+import Store from '@/store'
 export default {
   data() {
     const validateUsername = (rule, value, callback) => {
@@ -359,24 +359,24 @@ export default {
       const value = this.searchInputModel
       const _this = this
       if (key === 'name') {
-        doSearch(1, { name: value })
+        doSearch({ name: value })
       } else if (key === 'username') {
-        doSearch(1, { username: value })
+        doSearch({ username: value })
       } else if (key === 'email') {
-        doSearch(1, { email: value })
+        doSearch({ email: value })
       } else if (key === 'phone') {
         doSearch(1, { phone: value })
       } else {
         console.log('选择了错误的搜索类型')
       }
-      function doSearch(orgId, condition) {
+      function doSearch(condition) {
         const page = {
           current:
             _this.currentPage === 1 ? 0 : _this.currentPage * _this.pageSize,
           size: _this.pageSize
         }
         const params = Object.assign(page, condition)
-        _getUserListByOrgId(orgId, params)
+        _getUserListByOrgId(_this.currentOrg.id, params)
           .then(response => {
             _this.users = response.data.payloads
             _this.totalRecord = response.data.totalNum
