@@ -46,6 +46,10 @@ const user = {
     // 登录
     Login({ commit }, { username, password }) {
       return new Promise((resolve, reject) => {
+        // cookie中存储的token可能会过期，所以先删除他
+        commit('SET_TOKEN', '')
+        removeToken()
+        // 发送登陆请求
         _login(username.trim(), password.trim())
           .then(response => {
             const token = response.data.payloads[0].token
