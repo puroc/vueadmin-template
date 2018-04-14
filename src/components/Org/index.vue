@@ -111,6 +111,9 @@ export default {
                 })
               } else {
                 this.getOrgTree()
+                console.log(this.orgModel)
+                // 当前机构切换到被删除机构的上级机构
+                this.$store.dispatch('SwitchOrg', this.orgModel.parent.data.id)
               }
             })
             .catch(error => {
