@@ -102,8 +102,8 @@ export default {
             .then(response => {
               // 关闭对话框
               this.closeOrgDialog()
-              // 存在下级机构，不允许删除
-              if (response.data.resultCode === '10001') {
+              // 存在下级机构或者是企业根机构，不允许删除
+              if (response.data.resultCode === '10001' || response.data.resultCode === '10002') {
                 Message({
                   message: response.data.message,
                   type: 'error',
