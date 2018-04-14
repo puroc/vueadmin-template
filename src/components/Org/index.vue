@@ -10,12 +10,12 @@
       </div>
       <div style="margin:5%;">
         <el-form :model="orgModel" ref="addOrgForm">
-          <el-form-item label="机构名称" prop='upperOrg.label'>
-            <el-input v-model="orgModel.upperOrg.label" :disabled="editable"></el-input>
+          <el-form-item label="机构名称" prop='data.label'>
+            <el-input v-model="orgModel.data.label" :disabled="editable"></el-input>
           </el-form-item>
           <el-button type="text" @click="showSonOrgInput" v-show="!editable">添加下级机构</el-button>
-          <el-form-item label="下级机构名称" prop='label' v-show="isShowSonOrg">
-            <el-input v-model="orgModel.label"></el-input>
+          <el-form-item label="下级机构名称" prop='nextOrg.label' v-show="isShowSonOrg">
+            <el-input v-model="orgModel.nextOrg.label"></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -44,7 +44,8 @@ export default {
       },
       // 添加机构表单对应的model
       orgModel: {
-        upperOrg: {}
+        data: {},
+        nextOrg: {}
       },
       // 控制添加机构dialog是否可见
       orgDialogFormVisible: false,
@@ -78,14 +79,14 @@ export default {
     // 添加机构
     addOrg() {
       this.closeOrgDialog()
-      if (!this.orgModel.label) {
+      if (!this.orgModel.nextOrg.label) {
         return
       }
       const org = []
       org.push({
-        label: this.orgModel.label
+        label: this.orgModel.nextOrg.label
       })
-      _addOrg(this.orgModel.upperOrg.id, org)
+      _addOrg(this.orgModel.data.id, org)
         .then(() => {
           this.getOrgTree()
         })
@@ -97,7 +98,7 @@ export default {
     deleteOrg() {
       showConfirmMsg(this, '此操作将永久删除该机构, 是否继续?')
         .then(() => {
-          _deleteOrg(this.orgModel.upperOrg.id)
+          _deleteOrg(this.orgModel.data.id)
             .then(response => {
               // 关闭对话框
               this.closeOrgDialog()
@@ -126,15 +127,16 @@ export default {
       this.editable = true
     },
     // 打开添加机构对话框
-    openOrgDialog(org) {
-      // 充值表单内容
+    openOrgDialog(node) {
+      // 重置表单内容
       resetForm(this, 'addOrgForm')
       this.orgDialogFormVisible = true
       // 将选中的机构设置为上级机构，即在该机构下面添加机构
-      this.orgModel.upperOrg = org
+      this.orgModel = node
+      this.orgModel.nextOrg = {}
     },
     rightClick(event, data, node, component) {
-      this.openOrgDialog(data)
+      this.openOrgDialog(node)
     },
     switchToEdit() {
       this.editable = !this.editable
