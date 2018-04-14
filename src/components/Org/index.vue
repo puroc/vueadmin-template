@@ -1,29 +1,26 @@
 <template>
   <div>
-    <div style="height:60px">
-      <div style="line-height:60px;margin-left:30px">
-        <el-row>
-          <el-col :span="24">
-            <el-button type="primary" size="medium" @click="openAddOrgDialog">添加</el-button>
-            <el-button type="primary" size="medium" @click="deleteOrg">删除</el-button>
-          </el-col>
-        </el-row>
-      </div>
-    </div>
-    <el-tree node-key="id" default-expand-all :expand-on-click-node="false" :data="orgTree" :props="defaultProps" @node-click="handleNodeClick">
+    <el-tree node-key="id" default-expand-all :expand-on-click-node="false" :data="orgTree" :props="defaultProps" @node-click="handleNodeClick" @node-contextmenu="rightClick">
     </el-tree>
 
-    <el-dialog title="添加机构" :visible.sync="addOrgDialogFormVisible">
-      <el-form :model="addOrgModel" ref="addOrgForm">
-        <el-form-item label="上级机构" prop='upperOrg.label'>
-          <el-input v-model="addOrgModel.upperOrg.label" :disabled="false"></el-input>
-        </el-form-item>
-        <el-form-item label="机构名称" prop='label'>
-          <el-input v-model="addOrgModel.label"></el-input>
-        </el-form-item>
-      </el-form>
+    <el-dialog title="机构详情" :visible.sync="orgDialogFormVisible">
+      <div style="float:right;margin-right:5%">
+        <el-button type="primary" icon="el-icon-edit" plain @click="switchToEdit"></el-button>
+        <el-button type="primary" icon="el-icon-delete" plain @click="deleteOrg"></el-button>
+      </div>
+      <div style="margin:5%;">
+        <el-form :model="orgModel" ref="addOrgForm">
+          <el-form-item label="机构名称" prop='upperOrg.label'>
+            <el-input v-model="orgModel.upperOrg.label" :disabled="editable"></el-input>
+          </el-form-item>
+          <el-button type="text" @click="showSonOrgInput" v-show="!editable">添加下级机构</el-button>
+          <el-form-item label="下级机构名称" prop='label' v-show="isShowSonOrg">
+            <el-input v-model="orgModel.label"></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="addOrgDialogFormVisible = false">取 消</el-button>
+        <el-button @click="closeOrgDialog">取 消</el-button>
         <el-button type="primary" @click="addOrg">确 定</el-button>
       </div>
     </el-dialog>
@@ -45,14 +42,14 @@ export default {
         children: 'children',
         label: 'label'
       },
-      // 选中的机构
-      selectedOrg: {},
       // 添加机构表单对应的model
-      addOrgModel: {
+      orgModel: {
         upperOrg: {}
       },
       // 控制添加机构dialog是否可见
-      addOrgDialogFormVisible: false
+      orgDialogFormVisible: false,
+      editable: true,
+      isShowSonOrg: false
     }
   },
   computed: {
@@ -76,20 +73,20 @@ export default {
     },
     // 处理机构数节点点击事件
     handleNodeClick(data) {
-      this.selectedOrg = data
-      this.$store.dispatch('SwitchOrg', this.selectedOrg.id)
+      this.$store.dispatch('SwitchOrg', data.id)
     },
     // 添加机构
     addOrg() {
-      this.addOrgDialogFormVisible = false
+      this.closeOrgDialog()
+      if (!this.orgModel.label) {
+        return
+      }
       const org = []
       org.push({
-        label: this.addOrgModel.label
+        label: this.orgModel.label
       })
-      _addOrg(this.addOrgModel.upperOrg.id, org)
+      _addOrg(this.orgModel.upperOrg.id, org)
         .then(() => {
-          // 添加成功，将选中的机构清空，同时获取最新的机构树
-          this.selectedOrg = {}
           this.getOrgTree()
         })
         .catch(error => {
@@ -98,14 +95,12 @@ export default {
     },
     // 删除机构
     deleteOrg() {
-      // 如果没有选择机构，则不允许删除
-      if (!this.selectedOrg.label) {
-        return
-      }
       showConfirmMsg(this, '此操作将永久删除该机构, 是否继续?')
         .then(() => {
-          _deleteOrg(this.selectedOrg.id)
+          _deleteOrg(this.orgModel.upperOrg.id)
             .then(response => {
+              // 关闭对话框
+              this.closeOrgDialog()
               // 存在下级机构，不允许删除
               if (response.data.resultCode === '10001') {
                 Message({
@@ -116,7 +111,6 @@ export default {
               } else {
                 this.getOrgTree()
               }
-              this.selectedOrg = {}
             })
             .catch(error => {
               console.log(error)
@@ -126,17 +120,27 @@ export default {
           showMsg(this, 'info', '已取消删除')
         })
     },
+    closeOrgDialog() {
+      this.orgDialogFormVisible = false
+      this.isShowSonOrg = false
+      this.editable = true
+    },
     // 打开添加机构对话框
-    openAddOrgDialog() {
-      // 没有选择上级机构时，不允许添加机构
-      if (!this.selectedOrg.label) {
-        return
-      }
+    openOrgDialog(org) {
       // 充值表单内容
       resetForm(this, 'addOrgForm')
-      this.addOrgDialogFormVisible = true
+      this.orgDialogFormVisible = true
       // 将选中的机构设置为上级机构，即在该机构下面添加机构
-      this.addOrgModel.upperOrg = this.selectedOrg
+      this.orgModel.upperOrg = org
+    },
+    rightClick(event, data, node, component) {
+      this.openOrgDialog(data)
+    },
+    switchToEdit() {
+      this.editable = !this.editable
+    },
+    showSonOrgInput() {
+      this.isShowSonOrg = !this.isShowSonOrg
     }
   }
 }
