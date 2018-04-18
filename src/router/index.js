@@ -80,6 +80,27 @@ export const constantRouterMap = [
     ],
     permission: 'role'
   },
+  {
+    path: '/haha',
+    component: Layout,
+    name: '测试页面',
+    meta: { title: '测试页面', icon: 'example' },
+    children: [
+      {
+        path: 'index',
+        name: 'test1',
+        component: () => import('@/views/test/index'),
+        meta: { title: '测试页面1', icon: 'example' }
+      },
+      {
+        path: 'index',
+        name: 'test2',
+        component: () => import('@/views/test/index'),
+        meta: { title: '测试页面2', icon: 'example' }
+      }
+    ],
+    permission: 'test'
+  },
 
   { path: '*', redirect: '/404', hidden: true }
 ]
